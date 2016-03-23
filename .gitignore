@@ -1,0 +1,13 @@
+*.txt
+*.am
+*.IN7
+*.T35
+*.bat
+*.lnk
+*.in
+*.gdf
+
+SF_files/
+AcceleratorPlates/
+Acc2/
+Archive/
