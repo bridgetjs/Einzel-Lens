@@ -22,7 +22,7 @@ LensZRange=fc.LensZRange
 ScreenPosRange=fc.ScreenPosRange
 #LensZRange=[50]
 TempRange=[25]
-
+InitialPos=fc.InitialPos
 InitialSize=fc.sigmax
 B_list=[]
 UI=[]
@@ -57,7 +57,7 @@ for ScreenPos in ScreenPosRange:
             if not os.path.exists("Plots"):
                 os.makedirs("Plots")
         
-            fc.BeamDynWriter("beamdynB.in","B","Screens",0,ScreenPos)
+            fc.BeamDynWriter("beamdynB.in","B","Screens",0,ScreenPos,InitialPos)
             
             fc.Fisher()
             

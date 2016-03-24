@@ -25,6 +25,8 @@ N=2000
 InitialSize=fc.sigmax
 stdxerror=[]
 Tfitarray=[]
+ScreenPosArray=[]
+LensPosArray=[]
 eTfittedarray=[]
 Pathname=fc.Pathname
 LensZRange=fc.LensZRange
@@ -35,6 +37,8 @@ for Temp in TempRange:
     for ScreenPos in ScreenPosRange:
    
         for LensZ in LensZRange:
+            
+            
             stdx=[]
             stdxerror=[]
             V=[]
@@ -46,10 +50,10 @@ for Temp in TempRange:
             
             if ScreenPos<=LensZ: continue
             
+            print 'Running T Simulation with Lens at %d and Screen at %d' %(LensZ, ScreenPos)
             
             AfileName='AVals/Adata(%s,Screen=%d).txt' %(ParentFolderName,ScreenPos)
             BfileName='BVals/Bdata(%s,Screen=%d)..txt' %(ParentFolderName,ScreenPos)
-            print AfileName,BfileName
             
             fc.ABSet(AfileName,BfileName)
             print fc.Afile,fc.Bfile
@@ -76,7 +80,7 @@ for Temp in TempRange:
                 stdx2=[] #Array for single voltage standard deviations
                 UI2=[] #Array for single voltage initial energies
                 for j in range(0,10):
-                    beam=fc.BeamGenerator(N,Temp,InitialSize,0.025)#N,T,sigma,central Z position
+                    beam=fc.BeamGenerator(N,Temp,InitialSize,fc.InitialPos)#N,T,sigma,central Z position
                     fc.BeamDynWriter("beamdynMRFCTest.in","beam","Screens",beam,ScreenPos)
                 
                     print "Running GPT in "+ FolderName
@@ -94,25 +98,35 @@ for Temp in TempRange:
                 print 'U=',np.mean(UI2),'keV (',np.mean(stdx2)*1e3, '+/-', np.std(stdx2)*1e3, ') mm'
                 
                 os.chdir("../../../../VaryParameters");
-            plt.figure(30)
-            plt.errorbar(np.asarray(UI),np.asarray(stdx),np.asarray(stdxerror),fmt='.',markersize=0)
+#            plt.figure(30)
+#            plt.errorbar(np.asarray(UI),np.asarray(stdx),np.asarray(stdxerror),fmt='.',markersize=0)
             Tfit=optimization.curve_fit(fc.Model2, UI, stdx,sigma=1, maxfev=10000,p0=Temp)
             Tfitted=Tfit[0][0]
             eTfitted=np.sqrt(np.diag(Tfit[1])[0])
             print 'Temperature = %2.3f +/- %2.3f' %(Tfitted,eTfitted)
-            plt.plot(UI,fc.PlotModel(UI,Tfitted,Afit,Bfit,InitialSize),label='T=(%2.1f $\pm$ %2.1f)K' %(Tfitted,eTfitted))
+#            plt.plot(UI,fc.PlotModel(UI,Tfitted,Afit,Bfit,InitialSize),label='T=(%2.1f $\pm$ %2.1f)K' %(Tfitted,eTfitted))
             Tfitarray.append(Tfitted)
             eTfittedarray.append(eTfitted)
-
+            ScreenPosArray.append(ScreenPos)
+            LensPosArray.append(LensZ)
+            
             plt.figure(31)
             plt.errorbar(LensZ,Tfitted,eTfitted,fmt='.',label='LensPos=%d,Screen=%d' %(LensZ,ScreenPos))
 
+
     plt.figure(31)
     plt.axhline(y=Temp)
-plt.figure(30)
-plt.xlabel('Kinetic Energy after 2.5 cm of acceleration (keV)')
-plt.ylabel('Rms Size of Bunch (m)')
-plt.legend()
+
+print ScreenPosArray,LensPosArray,Tfitarray,eTfittedarray
+S=ScreenPosArray,LensPosArray,Tfitarray,eTfittedarray
+datafile=open('Screen&LensTvalues.txt','w')
+np.savetxt(datafile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)
+
+
+#plt.figure(30)
+#plt.xlabel('Kinetic Energy after 2.5 cm of acceleration (keV)')
+#plt.ylabel('Rms Size of Bunch (m)')
+#plt.legend()
 #plt.savefig('rmsSize&T(initalsize=%1.2e)910.eps'%InitialSize)
 #plt.savefig('rmsSize&T(initalsize=%1.2e)910.png'%InitialSize)
 
@@ -121,8 +135,7 @@ plt.figure(31)
 plt.axhline(y=Temp)
 plt.xlabel('LensPosition')
 plt.ylabel('Fitted Temperature (K)')
-
-plt.axis([20, 100, 50, 150])
+plt.axis([10, 100, 0, 100])
 plt.savefig('FittedTempvsLensPos.eps')
 plt.show()
 #Test of git

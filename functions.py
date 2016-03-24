@@ -26,7 +26,7 @@ GrandFolder="LensPosVar"
 Pathname="SF_Files/"+GrandFolder
 LensZRange=[20,30,40,50,60,70,80,90]
 ScreenPosRange=[30,40,50,60,70,80,90,100]
-IntialPos=0.025
+InitialPos=0.05
 
 def data(filename): #function to return the data belonging to an A or B file
     file=open(filename,'r') #Open file name
@@ -165,13 +165,13 @@ def BeamDynWriter(Name,Option,Outputstyle,beam,MCPPos=0.95,InitalPos=0.025,*args
     print('nps  = 200;		        # Number of particles []')
     print('Qtot = -1.e-12 ;		# Total charge in bunch [C]')
     print('nmac = (Qtot/qe)/nps ;		# Initial nmacro')
-
+    print 'InitalZ=%1.3f;' %InitialPos
     if Option=="B":
         for j in range(1,2000):
             xmom=-0.5e-4+j*(1e-4/2000)
-            print 'setstartpar("beam",0,0,InitalPos,%1.3e,0,0,me,qe,1);' %xmom
+            print 'setstartpar("beam",0,0,InitalZ,%1.3e,0,0,me,qe,1);' %xmom
     if Option=="A":
-        print('setstartline("beam",nps,-radius,0 ,InitalPos,radius,0,InitalPos,0,0,0,me,qe,1);')
+        print('setstartline("beam",nps,-radius,0 ,InitalZ,radius,0,InitalZ,0,0,0,me,qe,1);')
     if Option=="GenBunch":
 #        Call Maxwell Generation?
         print('Tbunch=10;')

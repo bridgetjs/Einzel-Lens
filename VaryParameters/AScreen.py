@@ -55,7 +55,7 @@ for ScreenPos in ScreenPosRange:
             if not os.path.exists("Plots"):
                 os.makedirs("Plots")
             
-            fc.BeamDynWriter("beamdynAfcTest.in","A","Screens",0,ScreenPos)
+            fc.BeamDynWriter("beamdynAfcTest.in","A","Screens",0,ScreenPos,fc.InitialPos)
 
             fc.Fisher()
             
