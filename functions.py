@@ -25,6 +25,8 @@ PlotterCounter=1
 GrandFolder="LensPosVar"
 Pathname="SF_Files/"+GrandFolder
 LensZRange=[20,30,40,50,60,70,80,90]
+ScreenPosRange=[30,40,50,60,70,80,90,100]
+IntialPos=0.025
 
 def data(filename): #function to return the data belonging to an A or B file
     file=open(filename,'r') #Open file name
@@ -145,7 +147,7 @@ def rms(vec):
         ssum+=i**2
     return math.sqrt(ssum/len(vec))
 
-def BeamDynWriter(Name,Option,Outputstyle,beam,MCPPos=0.95,*args):
+def BeamDynWriter(Name,Option,Outputstyle,beam,MCPPos=0.95,InitalPos=0.025,*args):
     oldstdout = sys.stdout
     beamdyn=open(Name,'w')
     sys.stdout = beamdyn
@@ -167,9 +169,9 @@ def BeamDynWriter(Name,Option,Outputstyle,beam,MCPPos=0.95,*args):
     if Option=="B":
         for j in range(1,2000):
             xmom=-0.5e-4+j*(1e-4/2000)
-            print 'setstartpar("beam",0,0,0.025,%1.3e,0,0,me,qe,1);' %xmom
+            print 'setstartpar("beam",0,0,InitalPos,%1.3e,0,0,me,qe,1);' %xmom
     if Option=="A":
-        print('setstartline("beam",nps,-radius,0 ,0.025,radius,0,0.025,0,0,0,me,qe,1);')
+        print('setstartline("beam",nps,-radius,0 ,InitalPos,radius,0,InitalPos,0,0,0,me,qe,1);')
     if Option=="GenBunch":
 #        Call Maxwell Generation?
         print('Tbunch=10;')
@@ -381,12 +383,12 @@ def Plotter(Infile,FolderName,i,*args):
             plt.xlabel('initial x (m)')
             plt.ylabel('final x (m) ')
             a0=([0.0, 0.0])
-           
             fit = optimization.curve_fit(line, inxarray, finxarray,a0)
             Avalue=fit[0][0]
             plt.plot(np.asarray(inxarray),Avalue*np.asarray(inxarray))
             plotname="../../../../GPT_A/Archive/"+FolderName
             plt.savefig(plotname+ ".eps")
+            plt.close()
             return np.mean(initialT),Avalue
         if ar=='Tz':
             plt.figure(TZfig)
