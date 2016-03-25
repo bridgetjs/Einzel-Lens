@@ -121,7 +121,7 @@ print ScreenPosArray,LensPosArray,Tfitarray,eTfittedarray
 S=ScreenPosArray,LensPosArray,Tfitarray,eTfittedarray
 datafile=open('Screen&LensTvalues.txt','w')
 np.savetxt(datafile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)
-
+datafile.close()
 
 #plt.figure(30)
 #plt.xlabel('Kinetic Energy after 2.5 cm of acceleration (keV)')

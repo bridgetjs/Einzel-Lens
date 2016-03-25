@@ -1,4 +1,4 @@
-*.txt
+
 *.am
 *.IN7
 *.T35
@@ -10,4 +10,8 @@
 SF_files/
 AcceleratorPlates/
 Acc2/
-Archive/
+GPT_A/
+GPT_B/
+Archive/*
+VaryParameters/AVals/
+VaryParameters/BVals/
