@@ -29,8 +29,8 @@ ScreenPosArray=[]
 LensPosArray=[]
 eTfittedarray=[]
 Pathname=fc.Pathname
-LensZRange=fc.LensZRange
-ScreenPosRange=fc.ScreenPosRange
+LensZRange=[50]
+ScreenPosRange=[100]
 
 for Temp in TempRange:
     
@@ -87,7 +87,7 @@ for Temp in TempRange:
                 #                DynamicFile,     GroupBy,    Outtxt
                     fc.GPTCall("beamdynMRFCTest.in","position","std1.txt")
                     
-                    finxarray,E=fc.Plotter("std1.txt",FolderName,i,'inx','finx','RealBunch')
+                    finxarray,E=fc.Plotter("std1.txt",FolderName,'inx','finx','RealBunch')
                     stdx2.append(np.std(finxarray))#Calculate std of final positions
                     UI2.append(E) #Add intial energy to array
 
@@ -137,6 +137,6 @@ plt.xlabel('LensPosition')
 plt.ylabel('Fitted Temperature (K)')
 plt.axis([10, 100, 0, 100])
 plt.savefig('FittedTempvsLensPos.eps')
-plt.show()
+
 #Test of git
 #Test 2

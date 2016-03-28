@@ -27,12 +27,12 @@ Screens,Lenses,T,eT=data4(datefile)
 i=0
 for indx,Screen in enumerate(Screens):
     
-    if Lenses[indx]==30:
-        plt.figure(1)
-        plt.errorbar(Screens[indx],T[indx],eT[indx],fmt='.'+colourstring[0])
-    if Lenses[indx]==40:
-        plt.figure(1)
-        plt.errorbar(Screens[indx],T[indx],eT[indx],fmt='.'+colourstring[1])
+#    if Lenses[indx]==30:
+#        plt.figure(1)
+#        plt.errorbar(Screens[indx],T[indx],eT[indx],fmt='.'+colourstring[0])
+#    if Lenses[indx]==40:
+#        plt.figure(1)
+#        plt.errorbar(Screens[indx],T[indx],eT[indx],fmt='.'+colourstring[1])
     if Lenses[indx]==50:
         plt.figure(1)
         plt.errorbar(Screens[indx],T[indx],eT[indx],fmt='.'+colourstring[2])
@@ -51,7 +51,7 @@ for indx,Screen in enumerate(Screens):
 
 plt.figure(1)
 plt.axhline(y=50)
-plt.axis([50, 125, 25, 75])
+plt.axis([25, 125, 25, 75])
 plt.xlabel('Screen Position ')
 plt.ylabel('Fitted Temperature (K)')
 plt.show()

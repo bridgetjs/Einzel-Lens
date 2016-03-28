@@ -199,7 +199,7 @@ def BeamDynWriter(Name,Option,Outputstyle,beam,MCPPos=0.95,InitalPos=0.025,*args
     print('accuracy(5) ; ')
 
     if Outputstyle=="Screens":
-        print 'screen("wcs","I",%1.3f);' %MCPPos
+        print 'screen("wcs","I",%f);' %(MCPPos/100)
         print('screen("wcs","I",0.1);')
     if Outputstyle=="Snaps":
         print('snapshot(0,1e-7,5e-11);')
@@ -235,7 +235,7 @@ def GPTCall(DynamicFile,GroupBy,Outtxt,*args):
 def line(x, a, b):
     return a*x + b
 
-def Plotter(Infile,FolderName,i,*args):
+def Plotter(Infile,FolderName,*args):
     global PlotterCounter
     fin=open(Infile,'r')
     
@@ -395,12 +395,14 @@ def Plotter(Infile,FolderName,i,*args):
             plt.plot()
             plt.xlabel('z (m)')
             plt.ylabel('Kinetic Energy (keV)')
+            plt.show()
         if ar=='RealBunch':
             return finxarray,np.mean(initialT);
         if ar=='Efields':
             plt.figure(Efig)
             plt.xlabel('z (m)')
             plt.ylabel('E_x (V/m)')
+
 def EinzelLensGen(Var,Range):
     return 0
 
