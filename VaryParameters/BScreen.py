@@ -21,6 +21,7 @@ Pathname=fc.Pathname
 LensZRange=fc.LensZRange
 ScreenPosRange=fc.ScreenPosRange
 #LensZRange=[50]
+#ScreenPosRange=[100]
 TempRange=[25]
 InitialPos=fc.InitialPos
 InitialSize=fc.sigmax

@@ -19,6 +19,7 @@ ParentFolderName="AcceleratorPlates"
 LensZRange=fc.LensZRange
 ScreenPosRange=fc.ScreenPosRange
 #LensZRange=[50]
+#ScreenPosRange=[100]
 TempRange=[25]
 
 InitialSize=fc.sigmax

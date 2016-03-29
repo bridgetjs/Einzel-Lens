@@ -26,7 +26,7 @@ GrandFolder="LensPosVar"
 Pathname="SF_Files/"+GrandFolder
 LensZRange=[20,30,40,50,60,70,80,90]
 ScreenPosRange=[30,40,50,60,70,80,90,100]
-InitialPos=0.05
+InitialPos=0.025
 
 def data(filename): #function to return the data belonging to an A or B file
     file=open(filename,'r') #Open file name
