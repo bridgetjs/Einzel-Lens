@@ -18,10 +18,10 @@ Aplot=1
 Eplot=0
 oldstdout = sys.stdout
 colourstring='bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy'
-TempRange=[25]
-Temp=10
+TempRange=[25,25,25,50,50,50]
+
 #TempRange=np.linspace(25,150,6)
-#Number=[50,100,500,750,1000,1250,1500,1750,2000,2500,3500,5000,6000,7500,8500,10000]
+Number=[1000,2000,5000,7500,10000]
 N=2000
 InitialSize=fc.sigmax
 stdxerror=[]
@@ -29,13 +29,18 @@ Tfitarray=[]
 ScreenPosArray=[]
 LensPosArray=[]
 eTfittedarray=[]
+Narray=[]
 Pathname=fc.Pathname
-LensZRange=fc.LensZRange
-ScreenPosRange=fc.ScreenPosRange
+LensZRange=[50]
+#fc.LensZRange
+ScreenPosRange=[100]
+#fc.ScreenPosRange
+ScreenPos=100
+LensZ=50
 
-for Temp in TempRange:
+for N in Number:
     
-    for ScreenPos in ScreenPosRange:
+    for Temp in TempRange:
    
         for LensZ in LensZRange:
             
@@ -98,7 +103,7 @@ for Temp in TempRange:
 
                 print 'U=',np.mean(UI2),'keV (',np.mean(stdx2)*1e3, '+/-', np.std(stdx2)*1e3, ') mm'
                 
-                os.chdir("../../../../VaryParameters");
+                os.chdir("../../../../VaryParameters")
                     
             plt.figure(30)
             plt.errorbar(np.asarray(UI),np.asarray(stdx),np.asarray(stdxerror),fmt='.',markersize=0)
@@ -111,17 +116,18 @@ for Temp in TempRange:
             eTfittedarray.append(eTfitted)
             ScreenPosArray.append(ScreenPos)
             LensPosArray.append(LensZ)
+            Narray.append(N)
             
             plt.figure(31)
-            plt.errorbar(LensZ,Tfitted,eTfitted,fmt='.',label='LensPos=%d,Screen=%d' %(LensZ,ScreenPos))
+            plt.errorbar(N,Tfitted,eTfitted,fmt='.')
 
 
     plt.figure(31)
     plt.axhline(y=Temp)
 
-print ScreenPosArray,LensPosArray,Tfitarray,eTfittedarray
-S=ScreenPosArray,LensPosArray,Tfitarray,eTfittedarray
-datafile=open('Screen&LensTvalues.txt','w')
+print Narray,Tfitarray,eTfittedarray
+S=Narray,Tfitarray,eTfittedarray
+datafile=open('N.txt','w')
 np.savetxt(datafile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)
 datafile.close()
 
@@ -134,10 +140,10 @@ datafile.close()
 
 
 plt.figure(31)
-plt.xlabel('LensPosition')
+plt.xlabel('Number of particles')
 plt.ylabel('Fitted Temperature (K)')
-plt.axis([10, 100, -50, 50])
-plt.savefig('FittedTempvsLensPos.eps')
+#plt.axis([10, 100, -25, 50])
+plt.savefig('FittedTempvsN.eps')
 plt.show()
 #Test of git
 #Test 2

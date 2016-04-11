@@ -17,7 +17,7 @@ loopmax=6
 oldstdout = sys.stdout
 colourstring='bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy'
 
-N=20
+N=200
 InitialSize=fc.sigmax
 Pathname=fc.Pathname
 stdxerror=[]
@@ -64,9 +64,9 @@ for i in range(loopmin,loopmax):
         
     stdx2=[] #Array for single voltage standard deviations
     UI2=[] #Array for single voltage initial energies
-    for j in range(0,2):
+    for j in range(0,1):
         beam=fc.BeamGenerator(N,Temp,InitialSize,fc.InitialPos)#N,T,sigma,central Z position
-        fc.BeamDynWriter("beamdynTraj.in","beam","Snaps",beam,90)
+        fc.BeamDynWriter("beamdynTraj.in","beam","Snaps",beam)
         
         print "Running GPT in "+ FolderName
         #                DynamicFile,     GroupBy,    Outtxt
@@ -79,43 +79,43 @@ os.chdir("../../../../VaryParameters");
 
 
 
-for i in range(loopmin,loopmax):
-    sys.stdout=oldstdout
-    VBackPlate=0-250*i;
-    FolderName='VBack=%d' %VBackPlate
-    
-    #Make and change to the corresponding directory
-    Path="../" +Pathname +"/"+ ParentFolderName+"/"+FolderName
-    if os.path.exists(Path):
-        os.chdir(Path);
-        print os.getcwd()
-    else:
-        print "Shit's fucked with ",FolderName
-        break
-    
-    if not os.path.exists("Plots"):
-        os.makedirs("Plots")
-        fc.Fisher()
-    
-    stdx2=[] #Array for single voltage standard deviations
-    UI2=[] #Array for single voltage initial energies
-    for j in range(1,2):
-        beam=fc.BeamGenerator(N,Temp,InitialSize,fc.InitialPos)#N,T,sigma,central Z position
-        fc.BeamDynWriter("beamdynTest.in","beam","Screens",beam,ScreenPos)
-
-        print "Running GPT in "+ FolderName
-        #                DynamicFile,     GroupBy,    Outtxt
-        fc.GPTCall("beamdynTest.in","position","std1.txt")
-
-        finxarray,E=fc.Plotter("std1.txt",FolderName,'inx','finx','RealBunch')
-        stdx2.append(np.std(finxarray))#Calculate std of final positions
-        UI2.append(E) #Add intial energy to array
-        print finxarray
-    UI.append(np.mean(UI2)) #Calculate mean energy
-    stdx.append(np.mean(stdx2)) #Calculate mean standard deviation
-    stdxerror.append(np.std(stdx2))#Calculate error on the mean
-
-    print 'U=',np.mean(UI2),'keV (',np.mean(stdx2)*1e3, '+/-', np.std(stdx2)*1e3, ') mm'
-    
-os.chdir("../../../../VaryParameters");
-plt.show()
+#for i in range(loopmin,loopmax):
+#    sys.stdout=oldstdout
+#    VBackPlate=0-250*i;
+#    FolderName='VBack=%d' %VBackPlate
+#    
+#    #Make and change to the corresponding directory
+#    Path="../" +Pathname +"/"+ ParentFolderName+"/"+FolderName
+#    if os.path.exists(Path):
+#        os.chdir(Path);
+#        print os.getcwd()
+#    else:
+#        print "Shit's fucked with ",FolderName
+#        break
+#    
+#    if not os.path.exists("Plots"):
+#        os.makedirs("Plots")
+#        fc.Fisher()
+#    
+#    stdx2=[] #Array for single voltage standard deviations
+#    UI2=[] #Array for single voltage initial energies
+#    for j in range(1,2):
+#        beam=fc.BeamGenerator(N,Temp,InitialSize,fc.InitialPos)#N,T,sigma,central Z position
+#        fc.BeamDynWriter("beamdynTest.in","beam","Screens",beam,ScreenPos)
+#
+#        print "Running GPT in "+ FolderName
+#        #                DynamicFile,     GroupBy,    Outtxt
+#        fc.GPTCall("beamdynTest.in","position","std1.txt")
+#
+#        finxarray,E=fc.Plotter("std1.txt",FolderName,'inx','finx','RealBunch')
+#        stdx2.append(np.std(finxarray))#Calculate std of final positions
+#        UI2.append(E) #Add intial energy to array
+#        print finxarray
+#    UI.append(np.mean(UI2)) #Calculate mean energy
+#    stdx.append(np.mean(stdx2)) #Calculate mean standard deviation
+#    stdxerror.append(np.std(stdx2))#Calculate error on the mean
+#
+#    print 'U=',np.mean(UI2),'keV (',np.mean(stdx2)*1e3, '+/-', np.std(stdx2)*1e3, ') mm'
+#    
+#os.chdir("../../../../VaryParameters");
+#plt.show()

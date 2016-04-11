@@ -23,6 +23,7 @@ def data4(filename): #function to return the data belonging to an A or B file
     return x,y,z,w
 
 datefile='Screen&LensTvalues.txt'
+#datefile='Tin=25.txt'
 Screens,Lenses,T,eT=data4(datefile)
 i=0
 
@@ -66,11 +67,11 @@ plt.plot(0,0,'.'+colourstring[4],label='Lens=70cm')
 plt.plot(0,0,'.'+colourstring[5],label='Lens=80cm')
 plt.plot(0,0,'.'+colourstring[6],label='Lens=90cm')
 plt.axhline(y=25)
-plt.axis([20, 110, -50, 100])
+plt.axis([20, 110, 0, 100])
 plt.xlabel('Screen Position ')
 plt.ylabel('Fitted Temperature (K)')
-plt.legend(loc=4)
-
+plt.legend(loc=2)
+plt.savefig('ScreenPosition.eps')
 
 for indx,Lens in enumerate(Lenses):
     
@@ -91,7 +92,7 @@ for indx,Lens in enumerate(Lenses):
         plt.errorbar(Lenses[indx],T[indx],eT[indx],fmt='.'+colourstring[3])
     if Screens[indx]==70:
         plt.figure(2)
-        
+
         plt.errorbar(Lenses[indx],T[indx],eT[indx],fmt='.'+colourstring[4])
     if Screens[indx]==80:
         plt.figure(2)
@@ -114,11 +115,11 @@ plt.plot(0,0,'.'+colourstring[5],label='Screen=80cm')
 plt.plot(0,0,'.'+colourstring[6],label='Screen=90cm')
 plt.plot(0,0,'.'+colourstring[7],label='Screen=100cm')
 plt.axhline(y=25)
-plt.axis([10, 100, -50, 100])
+plt.axis([10, 100, 0, 100])
 plt.xlabel('Lens Position ')
 plt.ylabel('Fitted Temperature (K)')
-plt.legend(loc=4)
+plt.legend(loc=2)
 
 plt.show()
-
+plt.savefig('ScreenPosition.eps')
 
