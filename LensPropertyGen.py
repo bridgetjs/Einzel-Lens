@@ -26,8 +26,11 @@ if not os.path.exists(Pathname):
     os.makedirs(Pathname)
 os.chdir(Pathname)
 
-for V2 in fc.VoltageRange:
-    ParentFolderName='Voltage=%d' %V2
+LensZ=50
+ApertureSizeRange=[0.5]
+
+for ApertureSize in fc.ApertureRange:
+    ParentFolderName='Aperture=%1.1f' %ApertureSize
 
     ##################################### Consts
     GroundRingRad=0
@@ -168,15 +171,15 @@ for V2 in fc.VoltageRange:
 os.chdir("../../")
 sys.stdout=oldstdout
 
-os.system("open 'SFBatch - Shortcut.lnk'");
+#os.system("open 'SFBatch - Shortcut.lnk'");
 str = raw_input("Press Enter to Continue once superfish has finished running  ");
 
 
 
 ###############################################  Prepare OUTSF7 Files for GPT    ###############################################################
-for V2 in fc.VoltageRange:
+for ApertureSize in fc.ApertureRange:
+    ParentFolderName='Aperture=%1.1f' %ApertureSize
     
-    ParentFolderName='Voltage=%d' %V2
 
     for i in range(loopmin,loopmax):
         

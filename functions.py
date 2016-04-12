@@ -29,7 +29,7 @@ LensZRange=[20,30,40,50,60,70,80,90]
 ScreenPosRange=[30,40,50,60,70,80,90,100]
 InitialPos=0.025
 VoltageRange=[1000,2000,3000,4000,5000]
-ApetureRange=[0.5,1,1.5,2,2.5]
+ApertureRange=[1,1.5,2,2.5]
 SeptRange=[0.5,1,2,5,10]
 
 def data(filename): #function to return the data belonging to an A or B file
@@ -375,11 +375,12 @@ def Plotter(Infile,FolderName,*args):
             a0=([0.0, 0.0])
             fit = optimization.curve_fit(line, div0array, finxarray, a0)
             Bvalue=fit[0][0]
+            eB=np.sqrt(np.diag(fit[1])[0])
             plt.plot(np.asarray(div0array),Bvalue*np.asarray(div0array))
             plotname="../../../../GPT_B/Archive/"+FolderName
             plt.savefig(plotname+ ".eps")
             plt.close()
-            return np.mean(initialT),Bvalue
+            return np.mean(initialT),Bvalue,eB
         if ar=='A':
             plt.figure(PlotterCounter)
             PlotterCounter+=1
@@ -388,12 +389,14 @@ def Plotter(Infile,FolderName,*args):
             plt.ylabel('final x (m) ')
             a0=([0.0, 0.0])
             fit = optimization.curve_fit(line, inxarray, finxarray,a0)
+            print np.cov(inxarray,finxarray)
             Avalue=fit[0][0]
+            eA=np.sqrt(np.diag(np.cov(inxarray,finxarray))[0])
             plt.plot(np.asarray(inxarray),Avalue*np.asarray(inxarray))
             plotname="../../../../GPT_A/Archive/"+FolderName
             plt.savefig(plotname+ ".eps")
             plt.close()
-            return np.mean(initialT),Avalue
+            return np.mean(initialT),Avalue,eA
         if ar=='Tz':
             plt.figure(TZfig)
             plt.plot()
