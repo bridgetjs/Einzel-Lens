@@ -22,11 +22,15 @@ oldstdout = sys.stdout #Save old output
 sigmax=2e-3 #Size of Intial Beam
 colourstring='bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy'
 PlotterCounter=1
-GrandFolder="LensPosVar"
+#GrandFolder="LensPosVar"
+GrandFolder="LensPropVar"
 Pathname="SF_Files/"+GrandFolder
 LensZRange=[20,30,40,50,60,70,80,90]
 ScreenPosRange=[30,40,50,60,70,80,90,100]
 InitialPos=0.025
+VoltageRange=[1000,2000,3000,4000,5000]
+ApetureRange=[0.5,1,1.5,2,2.5]
+SeptRange=[0.5,1,2,5,10]
 
 def data(filename): #function to return the data belonging to an A or B file
     file=open(filename,'r') #Open file name
