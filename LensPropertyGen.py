@@ -29,8 +29,8 @@ os.chdir(Pathname)
 LensZ=50
 ApertureSizeRange=fc.ApertureRange
 
-for ApertureSize in fc.ApertureRange:
-    ParentFolderName='Aperture=%1.1f' %ApertureSize
+for PlateSept in fc.SeptRange:
+    ParentFolderName='Sept=%1.1f' %PlateSept
 
     ##################################### Consts
     GroundRingRad=0
@@ -177,9 +177,8 @@ str = raw_input("Press Enter to Continue once superfish has finished running  ")
 
 
 ###############################################  Prepare OUTSF7 Files for GPT    ###############################################################
-for ApertureSize in fc.ApertureRange:
-    ParentFolderName='Aperture=%1.1f' %ApertureSize
-    
+for PlateSept in fc.SeptRange:
+    ParentFolderName='Sept=%1.1f' %PlateSept
 
     for i in range(loopmin,loopmax):
         

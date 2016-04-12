@@ -26,8 +26,9 @@ InitialSize=fc.sigmax
 A_list=[]
 UI=[]
 V=[]
-for ApertureSize in fc.ApertureRange:
-    ParentFolderName='Aperture=%1.1f' %ApertureSize
+for PlateSept in fc.SeptRange:
+    ParentFolderName='Sept=%1.1f' %PlateSept
+
     A_list=[]
     eA_list=[]
     UI=[]
@@ -70,7 +71,7 @@ for ApertureSize in fc.ApertureRange:
         os.chdir("../../../../VaryParameters");
 
 #    os.chdir("AVals")
-    AfileName='Avals/Adata(Aperture=%1.1f).txt' %(ApertureSize)
+    AfileName='Avals/Adata(Sept=%1.1f).txt' %(PlateSept)
     Afile=open(AfileName,'w')
     S= UI , A_list, eA_list
     np.savetxt(Afile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)

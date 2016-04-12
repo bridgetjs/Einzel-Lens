@@ -31,8 +31,9 @@ B_list=[]
 UI=[]
 V=[]
 
-for ApertureSize in fc.ApertureRange:
-    ParentFolderName='Aperture=%1.1f' %ApertureSize
+for PlateSept in fc.SeptRange:
+    ParentFolderName='Sept=%1.1f' %PlateSept
+
     B_list=[]
     eB_list=[]
     UI=[]
@@ -75,7 +76,8 @@ for ApertureSize in fc.ApertureRange:
         os.chdir("../../../../VaryParameters");
 #    print os.getcwd()
 
-    BfileName='BVals/Bdata(Aperture=%1.1f).txt' %(ApertureSize)
+    BfileName='BVals/Bdata(Sept=%1.1f).txt' %(PlateSept)
+
     Bfile=open(BfileName,'w')
     S= UI , B_list, eB_list
     np.savetxt(Bfile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)
