@@ -27,7 +27,7 @@ if not os.path.exists(Pathname):
 os.chdir(Pathname)
 
 LensZ=50
-ApertureSizeRange=[0.5]
+ApertureSizeRange=fc.ApertureRange
 
 for ApertureSize in fc.ApertureRange:
     ParentFolderName='Aperture=%1.1f' %ApertureSize
@@ -43,7 +43,7 @@ for ApertureSize in fc.ApertureRange:
     GroundPlateDepth=0.2;
 
     GridSizeR=100
-    GridSizeZ=1000
+    GridSizeZ=500
 
     OuterElectrodeRingRad=ApertureSize; #Radius of the Outer Electrode Ring
     InnerElectrodeRingRad=ApertureSize; #Radius of the Inner Electrode Ring
@@ -171,7 +171,7 @@ for ApertureSize in fc.ApertureRange:
 os.chdir("../../")
 sys.stdout=oldstdout
 
-#os.system("open 'SFBatch - Shortcut.lnk'");
+os.system("open 'SFBatch - Shortcut.lnk'");
 str = raw_input("Press Enter to Continue once superfish has finished running  ");
 
 

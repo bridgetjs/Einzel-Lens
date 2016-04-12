@@ -26,9 +26,8 @@ InitialSize=fc.sigmax
 A_list=[]
 UI=[]
 V=[]
-for V2 in fc.VoltageRange:
-
-    ParentFolderName='Voltage=%d' %V2
+for ApertureSize in fc.ApertureRange:
+    ParentFolderName='Aperture=%1.1f' %ApertureSize
     A_list=[]
     eA_list=[]
     UI=[]
@@ -71,7 +70,7 @@ for V2 in fc.VoltageRange:
         os.chdir("../../../../VaryParameters");
 
 #    os.chdir("AVals")
-    AfileName='Avals/Adata(Voltage=%d).txt' %(V2)
+    AfileName='Avals/Adata(Aperture=%1.1f).txt' %(ApertureSize)
     Afile=open(AfileName,'w')
     S= UI , A_list, eA_list
     np.savetxt(Afile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)

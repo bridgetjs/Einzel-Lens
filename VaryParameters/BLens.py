@@ -31,9 +31,8 @@ B_list=[]
 UI=[]
 V=[]
 
-for V2 in fc.VoltageRange:
-    
-    ParentFolderName='Voltage=%d' %V2
+for ApertureSize in fc.ApertureRange:
+    ParentFolderName='Aperture=%1.1f' %ApertureSize
     B_list=[]
     eB_list=[]
     UI=[]
@@ -76,7 +75,7 @@ for V2 in fc.VoltageRange:
         os.chdir("../../../../VaryParameters");
 #    print os.getcwd()
 
-    BfileName='BVals/Bdata(Voltage=%d).txt' %(V2)
+    BfileName='BVals/Bdata(Aperture=%1.1f).txt' %(ApertureSize)
     Bfile=open(BfileName,'w')
     S= UI , B_list, eB_list
     np.savetxt(Bfile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)

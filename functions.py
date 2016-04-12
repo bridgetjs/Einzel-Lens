@@ -29,7 +29,7 @@ LensZRange=[20,30,40,50,60,70,80,90]
 ScreenPosRange=[30,40,50,60,70,80,90,100]
 InitialPos=0.025
 VoltageRange=[1000,2000,3000,4000,5000]
-ApertureRange=[1,1.5,2,2.5]
+ApertureRange=[0.5,0.75,1,1.5,2,2.5]
 SeptRange=[0.5,1,2,5,10]
 
 def data(filename): #function to return the data belonging to an A or B file
@@ -166,7 +166,7 @@ def BeamDynWriter(Name,Option,Outputstyle,beam,MCPPos=0.95,InitalPos=0.025,*args
     print('zlen = 0.002; #bunch length')
     print('radius = 0.002; #bunch radius')
 
-    print('nps  = 200;		        # Number of particles []')
+    print('nps  = 2000;		        # Number of particles []')
     print('Qtot = -1.e-12 ;		# Total charge in bunch [C]')
     print('nmac = (Qtot/qe)/nps ;		# Initial nmacro')
     print 'InitalZ=%1.3f;' %InitialPos
@@ -391,6 +391,7 @@ def Plotter(Infile,FolderName,*args):
             fit = optimization.curve_fit(line, inxarray, finxarray,a0)
             print np.cov(inxarray,finxarray)
             Avalue=fit[0][0]
+            print np.sqrt(np.diag(fit[1])[0])
             eA=np.sqrt(np.diag(np.cov(inxarray,finxarray))[0])
             plt.plot(np.asarray(inxarray),Avalue*np.asarray(inxarray))
             plotname="../../../../GPT_A/Archive/"+FolderName
