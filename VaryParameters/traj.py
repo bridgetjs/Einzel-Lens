@@ -11,8 +11,8 @@ import scipy.optimize as optimization
 import scipy.interpolate as si
 import scipy.constants as sc
 import functions as fc
-loopmin=5
-loopmax=6
+loopmin=25
+loopmax=26
 
 oldstdout = sys.stdout
 colourstring='bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy'
@@ -30,14 +30,7 @@ Temp=50
 LensZ=50
 ScreenPos=100
 
-ParentFolderName='Pos=%d' %LensZ
-
-AfileName='AVals/Adata(%s,Screen=%d).txt' %(ParentFolderName,ScreenPos)
-BfileName='BVals/Bdata(%s,Screen=%d)..txt' %(ParentFolderName,ScreenPos)
-        
-fc.ABSet(AfileName,BfileName)
-print fc.Afile,fc.Bfile
-Afit,Bfit=fc.ABFIT()
+ParentFolderName='Optimised'
 
 stdx=[]
 stdxerror=[]

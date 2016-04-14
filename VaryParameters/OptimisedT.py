@@ -13,16 +13,14 @@ import scipy.constants as sc
 import functions as fc
 loopmin=1
 loopmax=21
-A=1
-Aplot=1
-Eplot=0
+
 oldstdout = sys.stdout
 colourstring='bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy'
-TempRange=[25,25,25,50,50,50]
+TempRange=[10,20,30,40,50]
 
 #TempRange=np.linspace(25,150,6)
-Number=[1000,2000,5000,7500,10000]
-N=2000
+Number=[2000]
+
 InitialSize=fc.sigmax
 stdxerror=[]
 Tfitarray=[]
@@ -46,13 +44,10 @@ for N in Number:
         stdxerror=[]
         V=[]
         UI=[]
-        ParentFolderName='Pos=%d' %LensZ
-        if LensZ==75.5:
-            ParentFolderName='Pos=75Working'
+        ParentFolderName='Optimised'
         
-        
-        if ScreenPos<=LensZ: continue
-        
+#        if ScreenPos<=LensZ: continue
+
         print 'Running T Simulation with Lens at %d and Screen at %d' %(LensZ, ScreenPos)
         
         AfileName='AVals/Adata(Optimised).txt'
@@ -74,7 +69,7 @@ for N in Number:
                 print os.getcwd()
             else:
                 print "Shit's fucked with ",FolderName
-                break
+                sys.exit()
             
             if not os.path.exists("Plots"):
                 os.makedirs("Plots")
@@ -88,10 +83,10 @@ for N in Number:
             
                 print "Running GPT in "+ FolderName
             #                DynamicFile,     GroupBy,    Outtxt
-                fc.GPTCall("beamdynMRFCTest.in","position","std1.txt")
+                fc.GPTCall("beamdynMRFCTest.in","position","std1.txt",'std')
                 
-                finxarray,E=fc.Plotter("std1.txt",FolderName,'inx','finx','RealBunch')
-                stdx2.append(np.std(finxarray))#Calculate std of final positions
+                ScreenSTD,E=fc.Plotter("std1.txt",FolderName,'RealBunchStds')
+                stdx2.append(ScreenSTD)#Calculate std of final positions
                 UI2.append(E) #Add intial energy to array
 
             UI.append(np.mean(UI2)) #Calculate mean energy
@@ -117,14 +112,12 @@ for N in Number:
         
         plt.figure(31)
         plt.errorbar(N,Tfitted,eTfitted,fmt='.')
+        plt.axhline(y=Temp)
 
-
-    plt.figure(31)
-    plt.axhline(y=Temp)
 
 print Narray,Tfitarray,eTfittedarray
 S=Narray,Tfitarray,eTfittedarray
-datafile=open('N.txt','w')
+datafile=open('OptimisedTN.txt','w')
 np.savetxt(datafile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)
 datafile.close()
 
@@ -139,7 +132,7 @@ datafile.close()
 plt.figure(31)
 plt.xlabel('Number of particles')
 plt.ylabel('Fitted Temperature (K)')
-#plt.axis([10, 100, -25, 50])
+plt.axis([0, 10000, -25, 50])
 plt.savefig('FittedTempvsN.eps')
 plt.show()
 #Test of git

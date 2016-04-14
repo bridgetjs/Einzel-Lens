@@ -7,12 +7,12 @@ import matplotlib.pyplot as plt
 import os
 import functions as fc
 loopmin=1
-loopmax=21
+loopmax=41
 oldstdout = sys.stdout
 
 
 ####### TO VARY
-ApertureSize=1
+ApertureSize=2
 V2=4000;
 V1=0;
 LensZRange=fc.LensZRange

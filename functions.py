@@ -120,10 +120,10 @@ def BeamGenerator(N,T,sigma,centreZ):
 def ABFIT():
     
     U,A=data(Afile)
-    Afit=si.UnivariateSpline(U,A)
+    Afit=si.UnivariateSpline(U,A,s=0)
     
     U,B=data(Bfile)
-    Bfit=si.UnivariateSpline(U,B)
+    Bfit=si.UnivariateSpline(U,B,s=0)
     
     return Afit,Bfit
 
@@ -206,7 +206,7 @@ def BeamDynWriter(Name,Option,Outputstyle,beam,MCPPos=0.95,InitalPos=0.025,*args
         print 'screen("wcs","I",%f);' %(MCPPos/100)
         print('screen("wcs","I",0.1);')
     if Outputstyle=="Snaps":
-        print('snapshot(0,1e-7,5e-11);')
+        print('snapshot(0,5e-8,5e-11);')
     if Outputstyle=="Touts":
         print ('tout(0,5e-8,5e-11) ;')
 
@@ -225,15 +225,22 @@ def Fisher():
     outfile.close()
 
 def GPTCall(DynamicFile,GroupBy,Outtxt,*args):
+    os.system("ASCI2GDF -o fieldmap.gdf SHORTOUTSF7.TXT R 1e-2 Z 1e-2 Er 100 Ez 100 absE 100 V 100")
+    os.system('gpt_track -o result.gdf %s boundaries1.in  GPTLICENSE=1539721513' %DynamicFile)
+    
     Outstring = 'x y rxy z Bx By Bz G'
+    Output ='gdftrans -o Out.gdf result.gdf %s x y rxy z Bx By Bz G' %GroupBy
+    
     for arg in args:
         if arg=="Efields":
             Outstring = "x y rxy z Bx By Bz G fEx fEy fEz"
+            Output ='gdftrans -o Out.gdf result.gdf %s x y rxy z Bx By Bz G fEx fEy fEz' %GroupBy
+        if arg=='std':
+            Output ='gdfa -o Out.gdf result.gdf %s stdx stdy stdz avgBx avgBy avgBz' %GroupBy
 
-    os.system("ASCI2GDF -o fieldmap.gdf SHORTOUTSF7.TXT R 1e-2 Z 1e-2 Er 100 Ez 100 absE 100 V 100")
-    os.system('gpt_track -o result.gdf %s boundaries1.in  GPTLICENSE=1539721513' %DynamicFile)
-    os.system('gdftrans -o Out.gdf result.gdf %s %s ' %(GroupBy, Outstring) )
+    os.system(Output)
     os.system('gdf2a -o %s Out.gdf' %Outtxt)
+
 
 
 def line(x, a, b):
@@ -257,8 +264,9 @@ def Plotter(Infile,FolderName,*args):
     initialbx=[]
     
     Ex=[]; Ey=[]; Ez=[];
-    newpart=0
-    
+
+    new_part=0
+    std_data=0
     for indx,ar in enumerate(args):
         if ar=='xz':
             xzfig=PlotterCounter
@@ -292,6 +300,7 @@ def Plotter(Infile,FolderName,*args):
                     gammainitial=thispartGamma[0]
                     initialT.append(Tinitial)
                 if ar=='finx':
+                    if len(thispartx)!=2: continue
                     finx=float(thispartx[1])
                     finxarray.append(finx)
                     Tfinal=thispartT[1]
@@ -306,7 +315,10 @@ def Plotter(Infile,FolderName,*args):
                 if ar=='Efields':
                     plt.figure(Efig)
                     plt.plot(thispartz,Ex)
-        
+                if ar=='RealBunchStds':
+                    ScreenStd=float(thispartx[1])
+                    InitialKin=float(thispartT[0])
+                    
         
             thispartx=[]; thisparty=[]; thispartrxy=[]; thispartz=[]; thisparttime=[];
             thispartGamma=[]; thispartG=[]; thispartT=[];
@@ -316,13 +328,35 @@ def Plotter(Infile,FolderName,*args):
             Ex=[]; Ey=[]; Ez=[];
           
             new_part=0
+            std_data=0
             continue
             
         if(l.split()[0] == 'ID'): continue
         if(l.split()[0] == 'x'):
             new_part=1
             continue
-        
+        if(l.split()[0] == 'position'):
+            std_data=1
+            continue
+
+        if (std_data==1):
+            
+            stdx=l.split()[1]
+            stdy=l.split()[2]
+            stdz=l.split()[3]
+            avgBx=float(l.split()[4])
+            avgBy=float(l.split()[5])
+            avgBz=float(l.split()[6])
+            b=math.sqrt(avgBx**2+avgBy**2+avgBz**2)
+            gamma=1/math.sqrt(1-b**2)
+            
+            T=511*(gamma-1)
+
+            thispartx.append(stdx);  thisparty.append(stdy);
+            thispartz.append(stdz)
+            thispartT.append(T)
+            thispartbx.append(avgBx);  thispartby.append(avgBy);   thispartbz.append(avgBz)
+
         if(new_part==1):
         
             x=l.split()[0]
@@ -337,8 +371,7 @@ def Plotter(Infile,FolderName,*args):
             gamma=1/math.sqrt(1-b**2)
             
             T=511*(gamma-1)
-        
-        
+            
             thispartx.append(x);  thisparty.append(y);
             thispartrxy.append(rxy) ; thispartz.append(z)
             
@@ -389,9 +422,9 @@ def Plotter(Infile,FolderName,*args):
             plt.ylabel('final x (m) ')
             a0=([0.0, 0.0])
             fit = optimization.curve_fit(line, inxarray, finxarray,a0)
-            print np.cov(inxarray,finxarray)
+#            print np.cov(inxarray,finxarray)
             Avalue=fit[0][0]
-            print np.sqrt(np.diag(fit[1])[0])
+#            print np.sqrt(np.diag(fit[1])[0])
             eA=np.sqrt(np.diag(np.cov(inxarray,finxarray))[0])
             plt.plot(np.asarray(inxarray),Avalue*np.asarray(inxarray))
             plotname="../../../../GPT_A/Archive/"+FolderName
@@ -410,6 +443,8 @@ def Plotter(Infile,FolderName,*args):
             plt.figure(Efig)
             plt.xlabel('z (m)')
             plt.ylabel('E_x (V/m)')
+        if ar=='RealBunchStds':
+            return ScreenStd,InitialKin
 
 def EinzelLensGen(Var,Range):
     return 0

@@ -13,7 +13,7 @@ import scipy.constants as sc
 import functions as fc
 
 loopmin=1
-loopmax=21
+loopmax=41
 
 oldstdout = sys.stdout
 Pathname=fc.Pathname
