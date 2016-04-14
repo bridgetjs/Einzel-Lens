@@ -12,11 +12,11 @@ oldstdout = sys.stdout
 
 
 ####### TO VARY
-ApertureSize=2.5
-V2=5000;
+ApertureSize=1
+V2=4000;
 V1=0;
 LensZRange=fc.LensZRange
-PlateSept=2; # Z seperation between the ring
+PlateSept=1; # Z seperation between the ring
 FlightTubeLength= 100; # length of the Cavity (cm)
 
 GrandFolder=fc.GrandFolder
@@ -29,8 +29,8 @@ os.chdir(Pathname)
 LensZ=50
 ApertureSizeRange=fc.ApertureRange
 
-for PlateSept in fc.SeptRange:
-    ParentFolderName='Sept=%1.1f' %PlateSept
+for k in range(0,1):
+    ParentFolderName='Optimised'
 
     ##################################### Consts
     GroundRingRad=0
@@ -177,8 +177,8 @@ str = raw_input("Press Enter to Continue once superfish has finished running  ")
 
 
 ###############################################  Prepare OUTSF7 Files for GPT    ###############################################################
-for PlateSept in fc.SeptRange:
-    ParentFolderName='Sept=%1.1f' %PlateSept
+for k in range(0,1):
+    ParentFolderName='Optimised'
 
     for i in range(loopmin,loopmax):
         

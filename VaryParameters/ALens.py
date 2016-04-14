@@ -26,8 +26,8 @@ InitialSize=fc.sigmax
 A_list=[]
 UI=[]
 V=[]
-for PlateSept in fc.SeptRange:
-    ParentFolderName='Sept=%1.1f' %PlateSept
+for k in range(0,1):
+    ParentFolderName='Optimised'
 
     A_list=[]
     eA_list=[]
@@ -71,7 +71,7 @@ for PlateSept in fc.SeptRange:
         os.chdir("../../../../VaryParameters");
 
 #    os.chdir("AVals")
-    AfileName='Avals/Adata(Sept=%1.1f).txt' %(PlateSept)
+    AfileName='Avals/Adata(Optimised).txt'
     Afile=open(AfileName,'w')
     S= UI , A_list, eA_list
     np.savetxt(Afile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)

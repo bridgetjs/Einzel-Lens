@@ -31,8 +31,8 @@ B_list=[]
 UI=[]
 V=[]
 
-for PlateSept in fc.SeptRange:
-    ParentFolderName='Sept=%1.1f' %PlateSept
+for k in range(0,1):
+    ParentFolderName='Optimised'
 
     B_list=[]
     eB_list=[]
@@ -76,7 +76,7 @@ for PlateSept in fc.SeptRange:
         os.chdir("../../../../VaryParameters");
 #    print os.getcwd()
 
-    BfileName='BVals/Bdata(Sept=%1.1f).txt' %(PlateSept)
+    BfileName='BVals/Bdata(Optimised).txt'
 
     Bfile=open(BfileName,'w')
     S= UI , B_list, eB_list
