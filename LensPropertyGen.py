@@ -7,7 +7,7 @@ import matplotlib.pyplot as plt
 import os
 import functions as fc
 loopmin=1
-loopmax=41
+loopmax=21
 oldstdout = sys.stdout
 
 
@@ -29,8 +29,8 @@ os.chdir(Pathname)
 LensZ=50
 ApertureSizeRange=fc.ApertureRange
 
-for k in range(0,1):
-    ParentFolderName='Optimised'
+for V2 in fc.VoltageRange:
+    ParentFolderName='Voltage=%d' %V2
 
     ##################################### Consts
     GroundRingRad=0
@@ -171,14 +171,14 @@ for k in range(0,1):
 os.chdir("../../")
 sys.stdout=oldstdout
 
-os.system("open 'SFBatch - Shortcut.lnk'");
+#os.system("open 'SFBatch - Shortcut.lnk'");
 str = raw_input("Press Enter to Continue once superfish has finished running  ");
 
 
 
 ###############################################  Prepare OUTSF7 Files for GPT    ###############################################################
-for k in range(0,1):
-    ParentFolderName='Optimised'
+for V2 in fc.VoltageRange:
+    ParentFolderName='Voltage=%d' %V2
 
     for i in range(loopmin,loopmax):
         

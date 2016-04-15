@@ -16,10 +16,10 @@ loopmax=21
 
 oldstdout = sys.stdout
 colourstring='bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy'
-TempRange=[10,20,30,40,50]
+TempRange=[10]
 
 #TempRange=np.linspace(25,150,6)
-Number=[2000]
+Number=[5,10,20,40,50,75,100,250,500]
 
 InitialSize=fc.sigmax
 stdxerror=[]
@@ -68,7 +68,7 @@ for N in Number:
                 os.chdir(Path);
                 print os.getcwd()
             else:
-                print "Shit's fucked with ",FolderName
+                print "Shit's fucked with ",Path
                 sys.exit()
             
             if not os.path.exists("Plots"):
@@ -117,7 +117,7 @@ for N in Number:
 
 print Narray,Tfitarray,eTfittedarray
 S=Narray,Tfitarray,eTfittedarray
-datafile=open('OptimisedTN.txt','w')
+datafile=open('NandTfixed.txt','w')
 np.savetxt(datafile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)
 datafile.close()
 
@@ -132,7 +132,7 @@ datafile.close()
 plt.figure(31)
 plt.xlabel('Number of particles')
 plt.ylabel('Fitted Temperature (K)')
-plt.axis([0, 10000, -25, 50])
+plt.axis([0, max(Number)+10, -10, 20])
 plt.savefig('FittedTempvsN.eps')
 plt.show()
 #Test of git

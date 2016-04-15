@@ -12,27 +12,31 @@ oldstdout = sys.stdout
 
 
 ####### TO VARY
-ApertureSize=2.5
-V2=5000;
+ApertureSize=2
+V2=4000;
 V1=0;
 LensZRange=fc.LensZRange
-PlateSept=2; # Z seperation between the ring
+PlateSept=1; # Z seperation between the ring
 FlightTubeLength= 100; # length of the Cavity (cm)
 
 GrandFolder=fc.GrandFolder
 Pathname="SF_Files/"+GrandFolder
 
-if not os.path.exists(Pathname):
-    os.makedirs(Pathname)
-os.chdir(Pathname)
+#if not os.path.exists(Pathname):
+#    os.makedirs(Pathname)
+#os.chdir(Pathname)
+
+LensZ=50
+ApertureSizeRange=fc.ApertureRange
 
 ###############################################  Prepare OUTSF7 Files for GPT    ###############################################################
-for ApertureSize in fc.ApertureRange:
-    ParentFolderName='Aperture=%1.1f' %ApertureSize
+for PlateSept in fc.SeptRange:
+    ParentFolderName='Sept=%1.1f' %PlateSept
     
     for i in range(loopmin,loopmax):
         
         VBackPlate=0-250*i;
+        
         
         #Print a string with the Voltages of the Plates
         FolderName2='VBack=%d' %VBackPlate
@@ -44,12 +48,10 @@ for ApertureSize in fc.ApertureRange:
         print('Reading from', infile,' Processing for GPT input') #
         #Header line
         p="         R             Z                Er         Ez             absE             V\n"
-        
+
         headerfinish=False
-        
+
         fin=np.loadtxt(infile,skiprows=numline)
         np.savetxt(outfile, fin, fmt='%1.5e', delimiter='\t', header = '\tR\t\tZ\t\tEr\t\tEz\t\tabsE\t\tV', comments='')
-
-sys.stdout=oldstdout
 
 sys.stdout=oldstdout

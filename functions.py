@@ -28,9 +28,10 @@ Pathname="SF_Files/"+GrandFolder
 LensZRange=[20,30,40,50,60,70,80,90]
 ScreenPosRange=[30,40,50,60,70,80,90,100]
 InitialPos=0.025
-VoltageRange=[1000,2000,3000,4000,5000]
-ApertureRange=[1,1.5,2,2.5]
-SeptRange=[0.5,1,2.5,5,10]
+
+ApertureRange=[2]
+SeptRange=[0.5,0.75,1,1.5,2,2.5,3]
+VoltageRange=[4000,4200,4400,4600,4800,5000]
 
 def data(filename): #function to return the data belonging to an A or B file
     file=open(filename,'r') #Open file name
