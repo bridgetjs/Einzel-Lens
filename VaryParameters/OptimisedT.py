@@ -19,7 +19,7 @@ colourstring='bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy'
 TempRange=[10]
 
 #TempRange=np.linspace(25,150,6)
-Number=[5,10,20,40,50,75,100,250,500]
+Number=[10,50,100,200,500,1000,1500,2000]
 
 InitialSize=fc.sigmax
 stdxerror=[]
@@ -115,11 +115,11 @@ for N in Number:
         plt.axhline(y=Temp)
 
 
-print Narray,Tfitarray,eTfittedarray
-S=Narray,Tfitarray,eTfittedarray
-datafile=open('NandTfixed.txt','w')
-np.savetxt(datafile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)
-datafile.close()
+#print Narray,Tfitarray,eTfittedarray
+#S=Narray,Tfitarray,eTfittedarray
+#datafile=open('NandTfixed.txt','w')
+#np.savetxt(datafile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)
+#datafile.close()
 
 #plt.figure(30)
 #plt.xlabel('Kinetic Energy after 2.5 cm of acceleration (keV)')

@@ -14,7 +14,7 @@ loopmin=1
 loopmax=21
 
 oldstdout = sys.stdout
-Pathname=fc.Pathname
+Pathname="SF_Files/LensPosVar"
 ParentFolderName="AcceleratorPlates"
 LensZRange=fc.LensZRange
 ScreenPosRange=fc.ScreenPosRange
@@ -47,9 +47,9 @@ for ScreenPos in ScreenPosRange:
             
             #Make and change to the corresponding directory
             Path="../" +Pathname +"/"+ ParentFolderName+"/"+FolderName
+          
             if os.path.exists(Path):
                 os.chdir(Path);
-#                print os.getcwd()
             else:
                 print "Shit's fucked with ",FolderName
                 break
@@ -64,7 +64,7 @@ for ScreenPos in ScreenPosRange:
                 #           DynamicFile,     GroupBy,    Outtxt
             fc.GPTCall("beamdynAfcTest.in","position","std1.txt")
                 
-            U_i,A=fc.Plotter("std1.txt",FolderName,i,'inx','finx','A')
+            U_i,A,eA=fc.Plotter("std1.txt",FolderName,i,'inx','finx','A')
             A_list.append(A)
             UI.append(U_i)
 

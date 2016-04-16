@@ -16,7 +16,7 @@ loopmin=1
 loopmax=21
 
 oldstdout = sys.stdout
-Pathname=fc.Pathname
+Pathname="SF_Files/LensPosVar"
 #ParentFolderName="AcceleratorPlates"
 LensZRange=fc.LensZRange
 ScreenPosRange=fc.ScreenPosRange
@@ -64,9 +64,9 @@ for ScreenPos in ScreenPosRange:
             
             print "Running GPT in "+ FolderName
             #           DynamicFile,     GroupBy,    Outtxt
-            fc.GPTCall("beamdynB.in","position","std1.txt")
+            fc.GPTCall("beamdynB.in","position","stdB.txt")
             
-            U_i,B=fc.Plotter("std1.txt",FolderName,i,'inx','div0','finx','B')
+            U_i,B,eB=fc.Plotter("stdB.txt",FolderName,i,'inx','div0','finx','B')
             B_list.append(B)
             UI.append(U_i)
 

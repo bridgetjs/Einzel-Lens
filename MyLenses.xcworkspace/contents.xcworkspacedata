@@ -35,6 +35,9 @@
       location = "group:VaryParameters/TCont.py">
    </FileRef>
    <FileRef
+      location = "group:VaryParameters/Lens&amp;ScreenT.py">
+   </FileRef>
+   <FileRef
       location = "group:VaryParameters/test.py">
    </FileRef>
    <FileRef

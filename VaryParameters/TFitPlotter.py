@@ -22,9 +22,9 @@ def data4(filename): #function to return the data belonging to an A or B file
     x=data[:,0]; y=data[:,1]; z=data[:,2]; w=data[:,3]   #read data assuming data is in the exepcted format
     return x,y,z,w
 
-datefile='Screen&LensTvalues.txt'
+datefile='Screen&Lens.txt'
 #datefile='Tin=25.txt'
-Screens,Lenses,T,eT=data4(datefile)
+Lenses,Screens,T,eT=data4(datefile)
 i=0
 
 for indx,Screen in enumerate(Screens):
@@ -71,7 +71,7 @@ plt.axis([20, 110, 0, 100])
 plt.xlabel('Screen Position ')
 plt.ylabel('Fitted Temperature (K)')
 plt.legend(loc=2)
-plt.savefig('ScreenPosition.eps')
+#plt.savefig('ScreenPosition.eps')
 
 for indx,Lens in enumerate(Lenses):
     
@@ -121,5 +121,5 @@ plt.ylabel('Fitted Temperature (K)')
 plt.legend(loc=2)
 
 plt.show()
-plt.savefig('ScreenPosition.eps')
+#plt.savefig('ScreenPosition.eps')
 
