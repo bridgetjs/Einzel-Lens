@@ -11,7 +11,7 @@ import scipy.constants as sc
 import functions as fc
 
 loopmin=1
-loopmax=41
+loopmax=21
 
 oldstdout = sys.stdout
 Pathname=fc.Pathname
@@ -26,8 +26,14 @@ InitialSize=fc.sigmax
 A_list=[]
 UI=[]
 V=[]
+#
+#for PlateSept in fc.TotSeptRange:
+#    ParentFolderName='Sept=%1.2f' %PlateSept
 for k in range(0,1):
-    ParentFolderName='Optimised'
+    ParentFolderName='Tuned2'
+#for V2 in fc.VoltageRange:
+#    ParentFolderName='Optimised'
+#    ParentFolderName='Voltage=%d' %V2
 
     A_list=[]
     eA_list=[]
@@ -71,7 +77,7 @@ for k in range(0,1):
         os.chdir("../../../../VaryParameters");
 
 #    os.chdir("AVals")
-    AfileName='Avals/Adata(Optimised).txt'
+    AfileName='Avals/Adata(%s).txt' %ParentFolderName
     Afile=open(AfileName,'w')
     S= UI , A_list, eA_list
     np.savetxt(Afile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)

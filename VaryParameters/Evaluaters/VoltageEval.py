@@ -23,8 +23,6 @@ VList=[]
 
 for indx,V2 in enumerate(fc.VoltageRange):
 
-        
-
     
     ParentFolderName='Voltage=%d' %V2
     
@@ -45,30 +43,36 @@ for indx,V2 in enumerate(fc.VoltageRange):
     RatioList.append((Brange/Arange)**2)
     VList.append(V2)
 
+print eA,eB
 plt.figure(1)
-plt.plot(VList,Brangelist,fc.colourstring[1])
-plt.figure(2)
-plt.plot(VList,RatioList,fc.colourstring[2])
-plt.figure(3)
-plt.plot(VList,Arangelist,fc.colourstring[3])
+plt.plot(VList,Brangelist,'.')
+plt.axis([3900,5100,5,5.5])
 
+
+plt.figure(2)
+plt.plot(VList,RatioList,'.')
+plt.axis([3900,5100,0,0.5])
+
+plt.figure(3)
+plt.plot(VList,Arangelist,'.')
+plt.axis([3900,5100,9,10])
 
 plt.figure(1)
 plt.legend()
 plt.xlabel('Central Plate Voltage (V)')
 plt.ylabel('Range of B')
-plt.savefig('BVoltage.eps')
+plt.savefig('BVoltage_fine.eps')
 
 plt.figure(2)
 plt.xlabel('Central Plate Voltage (V)')
 plt.ylabel(r'$\frac{R(B)}{R(A)}^2$')
-plt.savefig('BAVoltage.eps')
+plt.savefig('BAVoltage_fine.eps')
 
 plt.figure(3)
 plt.xlabel('Central Plate Voltage (V)')
 plt.ylabel('Range of A')
 plt.legend()
-plt.savefig('AVoltage.eps')
+plt.savefig('AVoltage_fine.eps')
 
 
 plt.show()

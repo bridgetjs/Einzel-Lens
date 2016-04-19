@@ -22,12 +22,12 @@ Brangelist=[]
 RatioList=[]
 Sept_List=[]
 
-for indx,PlateSept in enumerate(fc.SeptRange):
+for indx,PlateSept in enumerate(fc.TotSeptRange):
     
-    ParentFolderName='Sept=%1.1f' %PlateSept
+    ParentFolderName='Sept=%1.2f' %PlateSept
        
-    AfileName='../Avals/Adata(Sept=%1.1f).txt' %(PlateSept)
-    BfileName='../BVals/Bdata(Sept=%1.1f).txt' %(PlateSept)
+    AfileName='../Avals/Adata(Sept=%1.2f).txt' %(PlateSept)
+    BfileName='../BVals/Bdata(Sept=%1.2f).txt' %(PlateSept)
     
     
     A,eA=data(AfileName)
@@ -44,27 +44,28 @@ for indx,PlateSept in enumerate(fc.SeptRange):
     Sept_List.append(PlateSept)
 
 plt.figure(1)
-plt.plot(Sept_List,Brangelist,fc.colourstring[1])
+plt.plot(Sept_List,Brangelist,'.')
+plt.xlim([0,3.5])
 plt.figure(2)
-plt.plot(Sept_List,RatioList,fc.colourstring[2])
+plt.plot(Sept_List,RatioList,'.')
 plt.figure(3)
-plt.plot(Sept_List,Arangelist,fc.colourstring[3])
+plt.plot(Sept_List,Arangelist,'.')
 
 
 plt.figure(1)
 plt.legend()
 plt.xlabel('Plate Seperation (cm)')
 plt.ylabel('Range of B')
-plt.savefig('BSept.eps')
+plt.savefig('BSept_fine.eps')
 
 plt.figure(2)
 plt.xlabel('Plate Seperation (cm)')
 plt.ylabel(r'$\frac{R(B)}{R(A)}^2$')
-plt.savefig('BA_Sept.eps')
+plt.savefig('BA_Sept_fine.eps')
 
 plt.figure(3)
 plt.xlabel('Plate Seperation (cm)')
 plt.ylabel('Range of A')
 plt.legend()
-plt.savefig('A_Sept.eps')
+plt.savefig('A_Sept_fine.eps')
 plt.show()

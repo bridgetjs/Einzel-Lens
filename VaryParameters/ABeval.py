@@ -16,6 +16,14 @@ def data(filename): #function to return the data belonging to an A or B file
     D=data[:,1]
     return D
 
+def Alldata(filename): #function to return the data belonging to an A or B file
+    file=open(filename,'r')
+    data=np.loadtxt(file)
+    file.close()
+    U=data[:,0]
+    D=data[:,1]
+    return U,D
+
 for indx,ScreenPos in enumerate(ScreenPosRange):
     Arangelist=[]
     Brangelist=[]
@@ -31,9 +39,11 @@ for indx,ScreenPos in enumerate(ScreenPosRange):
         BfileName='BVals/Bdata(%s,Screen=%d).txt' %(ParentFolderName,ScreenPos)
         
         
-        A=data(AfileName)
-        B=data(BfileName)
+        UA,A=Alldata(AfileName)
+        UB,B=Alldata(BfileName)
         
+        fc.ABSet(AfileName,BfileName)
+        Afit,Bfit=fc.ABFIT()
         
         Arange=np.max(A)-np.min(A)
         Brange=np.max(B)-np.min(B)
@@ -42,25 +52,19 @@ for indx,ScreenPos in enumerate(ScreenPosRange):
         Brangelist.append(Brange)
         RatioList.append((Brange/Arange)**2)
         Zlist.append(LensZ)
-    #    print LensZ,Brange,Arange
-#        if indx2==0:
-#            plt.figure(1)
-#            plt.plot(1e-2*LensZ,Brange,fc.colourstring[indx]+'.',label='Pos=%d' %ScreenPos)
-#
-#            plt.figure(2)
-#            plt.plot(1e-2*LensZ,(Brange/Arange)**2,fc.colourstring[indx]+'.',label='Pos=%d' %ScreenPos)
-#
-#            plt.figure(3)
-#            plt.plot(1e-2*LensZ,Arange,fc.colourstring[indx]+'.',label='Pos=%d' %ScreenPos)
-#        else:
-#            plt.figure(1)
-#            plt.plot(1e-2*LensZ,Brange,fc.colourstring[indx]+'.')
-#
-#            plt.figure(2)
-#            plt.plot(1e-2*LensZ,(Brange/Arange)**2,fc.colourstring[indx]+'.')
-#
-#            plt.figure(3)
-#            plt.plot(1e-2*LensZ,Arange,fc.colourstring[indx]+'.')
+    
+    
+        plt.figure(6)
+        plt.plot(UA,Afit(UA))
+        plt.plot(UA,A,'.')
+        plt.xlabel('U (keV)')
+        plt.ylabel('A (no units)')
+    
+        plt.figure(5)
+        plt.plot(UB,Bfit(UB))
+        plt.plot(UB,B,'.')
+        plt.xlabel('U (keV)')
+        plt.ylabel('B m/rad')
 
     plt.figure(1)
     plt.plot(Zlist,Brangelist,fc.colourstring[indx],label='Pos=%d' %ScreenPos)

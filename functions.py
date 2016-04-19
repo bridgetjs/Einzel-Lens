@@ -31,6 +31,8 @@ InitialPos=0.025
 
 ApertureRange=[2]
 SeptRange=[0.5,0.75,1,1.5,2,2.5,3]
+NewSeptRange=[1.2,1.4,1.6,1.8]
+TotSeptRange=sorted(SeptRange+NewSeptRange)
 VoltageRange=[4000,4200,4400,4600,4800,5000]
 
 def data(filename): #function to return the data belonging to an A or B file
@@ -128,6 +130,24 @@ def ABFIT():
     
     return Afit,Bfit
 
+def ABCheck():
+
+    Afit,Bfit=ABFIT()
+    UA,A=data(Afile)
+    UB,B=data(Bfile)
+    
+    plt.figure(1)
+    plt.plot(UA,Afit(UA))
+    plt.plot(UA,A,'.')
+    plt.xlabel('U (keV)')
+    plt.ylabel('A (no units)')
+
+    plt.figure(2)
+    plt.plot(UB,Bfit(UB))
+    plt.plot(UB,B,'.')
+    plt.xlabel('U (keV)')
+    plt.ylabel('B m/rad')
+    plt.show()
 def Model2(U,T):
     
     e=sc.e

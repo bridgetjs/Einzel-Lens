@@ -30,8 +30,8 @@ LensZ=50
 ApertureSizeRange=fc.ApertureRange
 
 ###############################################  Prepare OUTSF7 Files for GPT    ###############################################################
-for PlateSept in fc.SeptRange:
-    ParentFolderName='Sept=%1.1f' %PlateSept
+for PlateSept in fc.NewSeptRange:
+    ParentFolderName='Sept=%1.2f' %PlateSept
     
     for i in range(loopmin,loopmax):
         

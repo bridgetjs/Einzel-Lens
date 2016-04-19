@@ -28,6 +28,11 @@ Lenses,Screens,T,eT=data4(datefile)
 i=0
 
 for indx,Screen in enumerate(Screens):
+    if eT[indx]<4: print Lenses[indx],Screens[indx],T[indx],'+/-',eT[indx]
+
+
+
+for indx,Screen in enumerate(Screens):
    
     if Lenses[indx]==30:
         plt.figure(1)
@@ -68,7 +73,7 @@ plt.plot(0,0,'.'+colourstring[5],label='Lens=80cm')
 plt.plot(0,0,'.'+colourstring[6],label='Lens=90cm')
 plt.axhline(y=25)
 plt.axis([20, 110, 0, 100])
-plt.xlabel('Screen Position ')
+plt.xlabel('Screen Position (cm)')
 plt.ylabel('Fitted Temperature (K)')
 plt.legend(loc=2)
 #plt.savefig('ScreenPosition.eps')
@@ -116,7 +121,7 @@ plt.plot(0,0,'.'+colourstring[6],label='Screen=90cm')
 plt.plot(0,0,'.'+colourstring[7],label='Screen=100cm')
 plt.axhline(y=25)
 plt.axis([10, 100, 0, 100])
-plt.xlabel('Lens Position ')
+plt.xlabel('Lens Position (cm)')
 plt.ylabel('Fitted Temperature (K)')
 plt.legend(loc=2)
 

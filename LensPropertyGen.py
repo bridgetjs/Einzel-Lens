@@ -28,9 +28,20 @@ os.chdir(Pathname)
 
 LensZ=50
 ApertureSizeRange=fc.ApertureRange
+#
+#for ApertureSize in fc.ApertureRange:
+#    ParentFolderName='Aperture=%1.1f' %ApertureSize
 
-for V2 in fc.VoltageRange:
-    ParentFolderName='Voltage=%d' %V2
+#for PlateSept in fc.NewSeptRange:
+#    ParentFolderName='Sept=%1.2f' %PlateSept
+
+#    ParentFolderName='Voltage=%d' %V2
+for k in range(0,1):
+    ParentFolderName='Tuned2'
+    V2=5000
+    PlateSept=1
+    ApertureSize=2
+
 
     ##################################### Consts
     GroundRingRad=0
@@ -171,15 +182,24 @@ for V2 in fc.VoltageRange:
 os.chdir("../../")
 sys.stdout=oldstdout
 
-#os.system("open 'SFBatch - Shortcut.lnk'");
+os.system("open 'SFBatch - Shortcut.lnk'");
 str = raw_input("Press Enter to Continue once superfish has finished running  ");
 
 
 
 ###############################################  Prepare OUTSF7 Files for GPT    ###############################################################
-for V2 in fc.VoltageRange:
-    ParentFolderName='Voltage=%d' %V2
+#for V2 in fc.VoltageRange:
+#    ParentFolderName='Voltage=%d' %V2
+#
+#for ApertureSize in fc.ApertureRange:
+#    
+#    ParentFolderName='Aperture=%1.1f' %ApertureSize
+#for PlateSept in fc.NewSeptRange:
+#    ParentFolderName='Sept=%1.1f' %PlateSept
 
+for k in range(0,1):
+    ParentFolderName='Tuned2'
+    
     for i in range(loopmin,loopmax):
         
         VBackPlate=0-250*i;
