@@ -17,7 +17,7 @@ V2=4000;
 V1=0;
 LensZRange=fc.LensZRange
 PlateSept=1; # Z seperation between the ring
-FlightTubeLength= 100; # length of the Cavity (cm)
+FlightTubeLength= 100/2; # length of the Cavity (cm)
 
 GrandFolder=fc.GrandFolder
 Pathname="SF_Files/"+GrandFolder
@@ -26,7 +26,7 @@ if not os.path.exists(Pathname):
     os.makedirs(Pathname)
 os.chdir(Pathname)
 
-LensZ=50
+LensZ=FlightTubeLength/2
 ApertureSizeRange=fc.ApertureRange
 #
 #for ApertureSize in fc.ApertureRange:
@@ -37,7 +37,7 @@ ApertureSizeRange=fc.ApertureRange
 
 #    ParentFolderName='Voltage=%d' %V2
 for k in range(0,1):
-    ParentFolderName='Tuned2'
+    ParentFolderName='HalfLength'
     V2=5000
     PlateSept=1
     ApertureSize=2
@@ -176,13 +176,14 @@ for k in range(0,1):
         sys.stdout = fid4
         print('START /wait C:\\LANL\\automesh.exe "Z:\\Documents\\MPhys Project\\Einzel Lens\\SF_files\\'+GrandFolder+'\\'+ParentFolderName+'\\'+FolderName+'\\EinzelLens.am" \r\n');
         print('START /wait C:\\LANL\\Poisson.exe  "Z:\\Documents\\MPhys Project\\Einzel Lens\\SF_files\\'+GrandFolder+'\\'+ParentFolderName+'\\'+FolderName+'\\EINZELLENS.T35" \r\n');
-        print('START "" C:\\LANL\\SF7.EXE "Z:\\Documents\\MPhys Project\\Einzel Lens\\SF_files\\'+GrandFolder+'\\'+ParentFolderName+'\\'+FolderName+'\\EINZELLENS.IN7" \r\n ');
+        print('START /wait  C:\\LANL\\SF7.EXE "Z:\\Documents\\MPhys Project\\Einzel Lens\\SF_files\\'+GrandFolder+'\\'+ParentFolderName+'\\'+FolderName+'\\EINZELLENS.IN7" \r\n ');
+        print ('del %0')
         fid4.close();
         os.chdir("../../");
 os.chdir("../../")
 sys.stdout=oldstdout
 
-os.system("open 'SFBatch - Shortcut.lnk'");
+#os.system("open 'SFBatch - Shortcut.lnk'");
 str = raw_input("Press Enter to Continue once superfish has finished running  ");
 
 
@@ -198,7 +199,7 @@ str = raw_input("Press Enter to Continue once superfish has finished running  ")
 #    ParentFolderName='Sept=%1.1f' %PlateSept
 
 for k in range(0,1):
-    ParentFolderName='Tuned2'
+    ParentFolderName='HalfLength'
     
     for i in range(loopmin,loopmax):
         

@@ -32,7 +32,9 @@ UI=[]
 V=[]
 
 for k in range(0,1):
-    ParentFolderName='Tuned2'
+    if k==0:
+        ParentFolderName='HalfLength'
+        ScreenPos=50
 #for PlateSept in fc.TotSeptRange:
 #    ParentFolderName='Sept=%1.2f' %PlateSept
 #for V2 in fc.VoltageRange:
@@ -44,7 +46,7 @@ for k in range(0,1):
     UI=[]
     V=[]
     
-    if ScreenPos<=LensZ: continue
+#    if ScreenPos<=LensZ: continue
 
     print 'Running BStudy with Lens at %d and Screen at %d' %(LensZ, ScreenPos)
 

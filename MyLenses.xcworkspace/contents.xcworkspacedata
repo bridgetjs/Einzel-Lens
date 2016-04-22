@@ -32,7 +32,13 @@
       location = "group:VaryParameters/OptimisedT.py">
    </FileRef>
    <FileRef
+      location = "group:VaryParameters/Navgplot.py">
+   </FileRef>
+   <FileRef
       location = "group:VaryParameters/TCont.py">
+   </FileRef>
+   <FileRef
+      location = "group:VaryParameters/Septplot.py">
    </FileRef>
    <FileRef
       location = "group:VaryParameters/Lens&amp;ScreenT.py">
@@ -45,6 +51,9 @@
    </FileRef>
    <FileRef
       location = "group:VaryParameters/traj.py">
+   </FileRef>
+   <FileRef
+      location = "group:VaryParameters/Energy&amp;Trajs.py">
    </FileRef>
    <FileRef
       location = "group:Reader.py">

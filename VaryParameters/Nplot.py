@@ -5,15 +5,6 @@ import numpy as np
 import matplotlib.pyplot as plt
 import os
 import math
-import sys
-sys.path.append('../')
-import scipy.optimize as optimization
-import scipy.interpolate as si
-import scipy.constants as sc
-import functions as fc
-
-Screen=50
-colourstring='bgrcmykbgrcmybgrcmybgrcmybgrcmybgrcmy'
 
 def data4(filename): #function to return the data file
     file=open(filename,'r') #Open file name
@@ -22,14 +13,19 @@ def data4(filename): #function to return the data file
     x=data[:,0]; y=data[:,1]; z=data[:,2];   #read data assuming data is in the exepcted format
     return x,y,z
 
+TempRange=[10,20,30,40,50]
 
 N,T,eT=data4('N.txt')
+
 for i,No in enumerate(N):
     plt.figure(1)
     plt.errorbar(N[i],T[i],eT[i],fmt='.')
+for Temp in TempRange:
+    plt.figure(1)
+    plt.axhline(y=Temp)
 
 plt.figure(1)
-plt.axhline(y=25)
-plt.axhline(y=50)
-plt.axis([0, 11000, 0, 100])
+plt.axis([0, 5500, 0, 60])
+plt.xlabel('N particles')
+plt.ylabel('Temperature (K)')
 plt.show()

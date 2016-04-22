@@ -11,8 +11,8 @@ import scipy.optimize as optimization
 import scipy.interpolate as si
 import scipy.constants as sc
 import functions as fc
-loopmin=25
-loopmax=26
+loopmin=1
+loopmax=2
 
 oldstdout = sys.stdout
 colourstring='bgrcmybgrcmybgrcmybgrcmybgrcmybgrcmy'
@@ -30,7 +30,7 @@ Temp=50
 LensZ=50
 ScreenPos=100
 
-ParentFolderName='Optimised'
+ParentFolderName='Tuned2'
 
 stdx=[]
 stdxerror=[]
@@ -48,7 +48,7 @@ for i in range(loopmin,loopmax):
         os.chdir(Path);
         print os.getcwd()
     else:
-        print "Shit's fucked with ",FolderName
+        print "Shit's fucked with ",Path
         break
 
     if not os.path.exists("Plots"):
@@ -65,10 +65,10 @@ for i in range(loopmin,loopmax):
         #                DynamicFile,     GroupBy,    Outtxt
         fc.GPTCall("beamdynTraj.in","time","std1.txt")
         
-        fc.Plotter("std1.txt",FolderName,'xz','yz','Tz')
+        fc.Plotter("std1.txt",FolderName,'xz','yz','Tz','show')
 
 
-os.chdir("../../../../VaryParameters");
+    os.chdir("../../../../VaryParameters");
 
 
 

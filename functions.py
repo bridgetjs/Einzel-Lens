@@ -227,7 +227,7 @@ def BeamDynWriter(Name,Option,Outputstyle,beam,MCPPos=0.95,InitalPos=0.025,*args
         print 'screen("wcs","I",%f);' %(MCPPos/100)
         print('screen("wcs","I",0.1);')
     if Outputstyle=="Snaps":
-        print('snapshot(0,5e-8,5e-11);')
+        print('snapshot(0,1.2e-7,5e-11);')
     if Outputstyle=="Touts":
         print ('tout(0,5e-8,5e-11) ;')
 
@@ -257,8 +257,7 @@ def GPTCall(DynamicFile,GroupBy,Outtxt,*args):
             Outstring = "x y rxy z Bx By Bz G fEx fEy fEz"
             Output ='gdftrans -o Out.gdf result.gdf %s x y rxy z Bx By Bz G fEx fEy fEz' %GroupBy
         if arg=='std':
-            Output ='gdfa -o Out.gdf result.gdf %s stdx stdy stdz avgBx avgBy avgBz' %GroupBy
-
+            Output ='gdfa -o Out.gdf result.gdf %s stdx stdy avgz avgBx avgBy avgBz' %GroupBy
     os.system(Output)
     os.system('gdf2a -o %s Out.gdf' %Outtxt)
 
@@ -288,6 +287,7 @@ def Plotter(Infile,FolderName,*args):
 
     new_part=0
     std_data=0
+
     for indx,ar in enumerate(args):
         if ar=='xz':
             xzfig=PlotterCounter
@@ -306,40 +306,45 @@ def Plotter(Infile,FolderName,*args):
         if(len(l.split())==0):
             
 #           Plotting Code here:
-            for indx,ar in enumerate(args):
                 
-                if ar=='xz':
-                    plt.figure(xzfig)
-                    plt.plot(thispartz,thispartx)
-                if ar=='yz':
-                    plt.figure(yzfig)
-                    plt.plot(thispartz,thisparty)
-                if ar=='inx':
-                    inx=float(thispartx[0])
-                    inxarray.append(inx)
-                    Tinitial=thispartT[0]
-                    gammainitial=thispartGamma[0]
-                    initialT.append(Tinitial)
-                if ar=='finx':
-                    if len(thispartx)!=2: continue
-                    finx=float(thispartx[1])
-                    finxarray.append(finx)
-                    Tfinal=thispartT[1]
-                    finalT.append(Tfinal)
-                    gammafinal=thispartGamma[1]
-                if ar=='div0':
-                    div0=float(thispartbx[0])/float(thispartbz[0])
-                    div0array.append(div0)
-                if ar=='Tz':
-                    plt.figure(TZfig)
-                    plt.plot(thispartz,thispartT)
-                if ar=='Efields':
+            if 'xz' in args:
+                plt.figure(xzfig)
+                plt.plot(thispartz,thispartx)
+            if 'yz' in args:
+                plt.figure(yzfig)
+                plt.plot(thispartz,thisparty)
+            if 'inx' in args:
+                inx=float(thispartx[0])
+                inxarray.append(inx)
+                Tinitial=thispartT[0]
+                gammainitial=thispartGamma[0]
+                initialT.append(Tinitial)
+            if 'finx' in args:
+                if len(thispartx)!=2: continue
+                finx=float(thispartx[1])
+                finxarray.append(finx)
+                Tfinal=thispartT[1]
+                finalT.append(Tfinal)
+                gammafinal=thispartGamma[1]
+            if 'div0' in args:
+                div0=float(thispartbx[0])/float(thispartbz[0])
+                div0array.append(div0)
+            if 'Tz' in args:
+                plt.figure(TZfig)
+                plt.plot(thispartz,thispartT)
+            if 'Efields' in args:
                     plt.figure(Efig)
                     plt.plot(thispartz,Ex)
-                if ar=='RealBunchStds':
-                    ScreenStd=float(thispartx[1])
-                    InitialKin=float(thispartT[0])
-                    
+        
+            if 'RealBunchStds' in args:
+                ScreenStd=float(thispartx[1])
+                InitialKin=float(thispartT[0])
+        
+        
+            if 'RealBunchShape' in args:
+                ScreenStdx=float(thispartx[1])
+                InitialKin=float(thispartT[0])
+                ScreenStdy=float(thisparty[1])
         
             thispartx=[]; thisparty=[]; thispartrxy=[]; thispartz=[]; thisparttime=[];
             thispartGamma=[]; thispartG=[]; thispartT=[];
@@ -356,7 +361,7 @@ def Plotter(Infile,FolderName,*args):
         if(l.split()[0] == 'x'):
             new_part=1
             continue
-        if(l.split()[0] == 'position'):
+        if(l.split()[0] == 'position' or l.split()[0] == 'time'):
             std_data=1
             continue
 
@@ -364,7 +369,7 @@ def Plotter(Infile,FolderName,*args):
             
             stdx=l.split()[1]
             stdy=l.split()[2]
-            stdz=l.split()[3]
+            avgz=l.split()[3]
             avgBx=float(l.split()[4])
             avgBy=float(l.split()[5])
             avgBz=float(l.split()[6])
@@ -374,10 +379,10 @@ def Plotter(Infile,FolderName,*args):
             T=511*(gamma-1)
 
             thispartx.append(stdx);  thisparty.append(stdy);
-            thispartz.append(stdz)
+            thispartz.append(avgz)
             thispartT.append(T)
             thispartbx.append(avgBx);  thispartby.append(avgBy);   thispartbz.append(avgBz)
-
+        
         if(new_part==1):
         
             x=l.split()[0]
@@ -402,70 +407,91 @@ def Plotter(Infile,FolderName,*args):
 
             thispartbx.append(bx);  thispartby.append(by);   thispartbz.append(bz)
 
-            for ar in args:
-                if ar=='Efields':
-                    Ex.append(l.split()[8])
-                    Ey.append( l.split()[9])
-                    Ez.append( l.split()[10])
+            if 'Efields' in args:
+                Ex.append(l.split()[8])
+                Ey.append( l.split()[9])
+                Ez.append( l.split()[10])
 
-    for indx,ar in enumerate(args):
-        if ar=='xz':
-            plt.figure(xzfig)
-            plt.xlabel('z (m)')
-            plt.ylabel('x (m)')
-        if ar=='yz':
-            plt.figure(yzfig)
-            plt.xlabel('z (m)')
-            plt.ylabel('y (m)')
-        if ar=='rms':
-            rmsx=rms(finxarray)
-            return rmsx
-        if ar=='B':
-            plt.figure(PlotterCounter)
-            PlotterCounter+=1
-            plt.plot(div0array,finxarray,'r.')
-            plt.xlabel('initial divergence (m/rad)')
-            plt.ylabel('final x (m) ')
-            a0=([0.0, 0.0])
-            fit = optimization.curve_fit(line, div0array, finxarray, a0)
-            Bvalue=fit[0][0]
-            eB=np.sqrt(np.diag(fit[1])[0])
-            plt.plot(np.asarray(div0array),Bvalue*np.asarray(div0array))
-            plotname="../../../../GPT_B/Archive/"+FolderName
-            plt.savefig(plotname+ ".eps")
-            plt.close()
-            return np.mean(initialT),Bvalue,eB
-        if ar=='A':
-            plt.figure(PlotterCounter)
-            PlotterCounter+=1
-            plt.plot(inxarray,finxarray,'r.')
-            plt.xlabel('initial x (m)')
-            plt.ylabel('final x (m) ')
-            a0=([0.0, 0.0])
-            fit = optimization.curve_fit(line, inxarray, finxarray,a0)
+    if 'xz' in args:
+        plt.figure(xzfig)
+        plt.xlabel('z (m)')
+        plt.ylabel('x (m)')
+    if 'yz' in args:
+        plt.figure(yzfig)
+        plt.xlabel('z (m)')
+        plt.ylabel('y (m)')
+    if 'rms' in args:
+        rmsx=rms(finxarray)
+        return rmsx
+    if 'B' in args:
+        plt.figure(PlotterCounter)
+        PlotterCounter+=1
+        plt.plot(div0array,finxarray,'r.')
+        plt.xlabel('initial divergence (m/rad)')
+        plt.ylabel('final x (m) ')
+        a0=([0.0, 0.0])
+        fit = optimization.curve_fit(line, div0array, finxarray, a0)
+        Bvalue=fit[0][0]
+        eB=np.sqrt(np.diag(fit[1])[0])
+        plt.plot(np.asarray(div0array),Bvalue*np.asarray(div0array))
+        plotname="../../../../GPT_B/Archive/"+FolderName
+        plt.savefig(plotname+ ".eps")
+        plt.close()
+        return np.mean(initialT),Bvalue,eB
+
+    if 'A' in args:
+        plt.figure(PlotterCounter)
+        PlotterCounter+=1
+        plt.plot(inxarray,finxarray,'r.')
+        plt.xlabel('initial x (m)')
+        plt.ylabel('final x (m) ')
+        a0=([0.0, 0.0])
+        fit = optimization.curve_fit(line, inxarray, finxarray,a0)
 #            print np.cov(inxarray,finxarray)
-            Avalue=fit[0][0]
+        Avalue=fit[0][0]
 #            print np.sqrt(np.diag(fit[1])[0])
-            eA=np.sqrt(np.diag(np.cov(inxarray,finxarray))[0])
-            plt.plot(np.asarray(inxarray),Avalue*np.asarray(inxarray))
-            plotname="../../../../GPT_A/Archive/"+FolderName
-            plt.savefig(plotname+ ".eps")
-            plt.close()
-            return np.mean(initialT),Avalue,eA
-        if ar=='Tz':
-            plt.figure(TZfig)
-            plt.plot()
-            plt.xlabel('z (m)')
-            plt.ylabel('Kinetic Energy (keV)')
-            plt.show()
-        if ar=='RealBunch':
-            return finxarray,np.mean(initialT);
-        if ar=='Efields':
-            plt.figure(Efig)
-            plt.xlabel('z (m)')
-            plt.ylabel('E_x (V/m)')
-        if ar=='RealBunchStds':
-            return ScreenStd,InitialKin
+        eA=np.sqrt(np.diag(np.cov(inxarray,finxarray))[0])
+        plt.plot(np.asarray(inxarray),Avalue*np.asarray(inxarray))
+        plotname="../../../../GPT_A/Archive/"+FolderName
+        plt.savefig(plotname+ ".eps")
+        plt.close()
+        return np.mean(initialT),Avalue,eA
+
+    if 'Tz' in args:
+        plt.figure(TZfig)
+        plt.plot()
+        plt.xlabel('z (m)')
+        plt.ylabel('Kinetic Energy (keV)')
+
+    if 'RealBunch' in args:
+        return finxarray,np.mean(initialT);
+    if 'Efields' in args:
+        plt.figure(Efig)
+        plt.xlabel('z (m)')
+        plt.ylabel('E_x (V/m)')
+                
+    if 'RealBunchStds' in args:
+        return ScreenStd,InitialKin
+    if 'RealBunchShape' in args:
+        return ScreenStdx,ScreenStdy,InitialKin
+
+    if 'avgs' in args:
+        plt.figure(xzfig)
+        plt.xlabel('z (m)')
+        plt.ylabel('stdx (m)')
+        
+        plt.figure(yzfig)
+        plt.xlabel('z (m)')
+        plt.ylabel('stdy (m)')
+        
+        plt.figure(TZfig)
+        plt.plot()
+        plt.xlabel('z (m)')
+        plt.ylabel('Mean beam energy (keV)')
+
+    if 'show' in args:
+        plt.show()
+
 
 def EinzelLensGen(Var,Range):
     return 0
