@@ -215,7 +215,12 @@ def BeamDynWriter(Name,Option,Outputstyle,beam,MCPPos=0.95,InitalPos=0.025,*args
         
         for j in range(0,len(beam[0])-1):
             print 'setstartpar("beam",%1.3e,%1.3e,%1.3e,%1.3e,%1.3e,%1.3e,me,qe,1);' %(beam[0][j] ,beam[1][j] ,beam[2][j] ,beam[3][j] ,beam[4][j] ,beam[5][j])
-
+    if Option=="BNonlin":
+        for j in range(1,2000):
+            xmom=-0.65e-3+j*(1.3e-3/2000)
+            print 'setstartpar("beam",0,0,InitalZ,%1.3e,0,0,me,qe,1);' %xmom
+    if Option=="ANonlin":
+        print('setstartline("beam",nps,-3*radius,0 ,InitalZ,3*radius,0,InitalZ,0,0,0,me,qe,1);')
 
     print('map2D_E("wcs","z",0,"fieldmap.gdf","R","Z","Er","Ez",1) ;')
     print('Zcol=0;')
@@ -427,7 +432,7 @@ def Plotter(Infile,FolderName,*args):
         plt.figure(PlotterCounter)
         PlotterCounter+=1
         plt.plot(div0array,finxarray,'r.')
-        plt.xlabel('initial divergence (m/rad)')
+        plt.xlabel('initial divergence (rad)')
         plt.ylabel('final x (m) ')
         a0=([0.0, 0.0])
         fit = optimization.curve_fit(line, div0array, finxarray, a0)
@@ -442,6 +447,7 @@ def Plotter(Infile,FolderName,*args):
     if 'A' in args:
         plt.figure(PlotterCounter)
         PlotterCounter+=1
+        
         plt.plot(inxarray,finxarray,'r.')
         plt.xlabel('initial x (m)')
         plt.ylabel('final x (m) ')

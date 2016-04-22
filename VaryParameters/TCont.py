@@ -51,16 +51,17 @@ for Temp in TempRange:
         start_time = timeit.default_timer()
 
         if k==0:
-            ParentFolderName='HalfLength'
-            L=50
-        if k==1:
             ParentFolderName='Tuned2'
-            L=100
+            ScreenPos=100
+      
+        if k==1:
+            ParentFolderName='HalfLength'
+            ScreenPos=50
+
+
         
-        print k,ParentFolderName
-        
-        Flighttubelength.append(L)
-        ScreenPos=L
+#        ParentFolderName='Tuned2'
+#        Flighttubelength.append(ScreenPos)
 #        ParentFolderName='Sept=%1.2f' %PlateSept
 #        ParentFolderName='Sept=%1.2f' %PlateSept
 #        ParentFolderName='HalfLength'
@@ -114,11 +115,12 @@ for Temp in TempRange:
             
                 print "Running GPT in "+ FolderName
             #                DynamicFile,     GroupBy,    Outtxt
-                fc.GPTCall("beamdynMRFCTest.in","position","std1.txt")
+                fc.GPTCall("beamdynMRFCTest.in","position","std1.txt",'std')
                 
-                finxarray,E=fc.Plotter("std1.txt",FolderName,'inx','finx','RealBunch')
-                stdx2.append(np.std(finxarray))#Calculate std of final positions
+                ScreenSTD,E=fc.Plotter("std1.txt",FolderName,'RealBunchStds')
+                stdx2.append(ScreenSTD)#Calculate std of final positions
                 UI2.append(E) #Add intial energy to array
+                
 
             UI.append(np.mean(UI2)) #Calculate mean energy
             stdx.append(np.mean(stdx2)) #Calculate mean standard deviation
@@ -130,7 +132,7 @@ for Temp in TempRange:
                 
         plt.figure(36)
         plt.errorbar(np.asarray(UI),np.asarray(stdx),np.asarray(stdxerror),fmt='.',markersize=0)
-        Tfit=optimization.curve_fit(fc.Model2, UI, stdx,sigma=stdxerror, maxfev=10000,p0=Temp)
+        Tfit=optimization.curve_fit(fc.Model2, UI, stdx,sigma=stdxerror, maxfev=100000,p0=Temp)
         Tfitted=Tfit[0][0]
         eTfitted=np.sqrt(np.diag(Tfit[1])[0])
         print 'Temperature = %2.3f +/- %2.3f' %(Tfitted,eTfitted)
@@ -142,32 +144,32 @@ for Temp in TempRange:
 #        Narray.append(N)
 #        SeptArray.append(PlateSept)
         plt.figure(35)
-        plt.errorbar(L,Tfitted,eTfitted,fmt='.')
+        plt.errorbar(ScreenPos,Tfitted,eTfitted,fmt='.')
         elapsed = timeit.default_timer() - start_time
         print elapsed
             
     plt.figure(35)
     plt.axhline(y=Temp)
 
-print SeptArray,Tfitarray,eTfittedarray
-S=Flighttubelength,Tfitarray,eTfittedarray
-datafile=open('FlightTube.txt','w')
-np.savetxt(datafile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)
-datafile.close()
+#print SeptArray,Tfitarray,eTfittedarray
+#S=Flighttubelength,Tfitarray,eTfittedarray
+#datafile=open('FlightTube.txt','w')
+#np.savetxt(datafile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)
+#datafile.close()
 
 plt.figure(36)
 plt.xlabel('Kinetic Energy after 7.5 cm of acceleration (keV)')
-plt.ylabel('Rms Size of Bunch (m)')
+plt.ylabel('Beam size (standard deviation) (m)')
 plt.legend()
 #plt.savefig('rmsSize&T(initalsize=%1.2e)910.eps'%InitialSize)
 #plt.savefig('rmsSize&T(initalsize=%1.2e)910.png'%InitialSize)
 
-
+#
 plt.figure(35)
 plt.xlabel('Flight Tube Length (cm)')
 plt.ylabel('Fitted Temperature (K)')
-plt.axis([0, 110, 0, 50])
+plt.axis([0, 100, 0, 100])
 #plt.savefig('FittedTemp.eps')
 plt.show()
-#Test of git
-#Test 2
+##Test of git
+##Test 2

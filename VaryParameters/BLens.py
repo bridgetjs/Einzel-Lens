@@ -34,7 +34,8 @@ V=[]
 for k in range(0,1):
     if k==0:
         ParentFolderName='HalfLength'
-        ScreenPos=50
+    
+    ParentFolderName='Tuned2'
 #for PlateSept in fc.TotSeptRange:
 #    ParentFolderName='Sept=%1.2f' %PlateSept
 #for V2 in fc.VoltageRange:
@@ -68,14 +69,15 @@ for k in range(0,1):
             os.makedirs("Plots")
     
         fc.BeamDynWriter("beamdynB.in","B","Screens",0,ScreenPos,InitialPos)
-        
+#        fc.BeamDynWriter("beamdynB.in","BNonlin","Snaps",0,ScreenPos,InitialPos)
         fc.Fisher()
         
         print "Running GPT in "+ FolderName
         #           DynamicFile,     GroupBy,    Outtxt
         fc.GPTCall("beamdynB.in","position","stdB.txt")
-        
+
         U_i,B,eB=fc.Plotter("stdB.txt",FolderName,i,'inx','div0','finx','B')
+#        fc.Plotter("stdB.txt",FolderName,i,'xz','show')
         B_list.append(B)
         eB_list.append(eB)
         UI.append(U_i)

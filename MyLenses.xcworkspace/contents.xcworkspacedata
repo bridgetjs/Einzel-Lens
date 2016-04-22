@@ -38,6 +38,9 @@
       location = "group:VaryParameters/TCont.py">
    </FileRef>
    <FileRef
+      location = "group:TSim/maxtest.py">
+   </FileRef>
+   <FileRef
       location = "group:VaryParameters/Septplot.py">
    </FileRef>
    <FileRef
