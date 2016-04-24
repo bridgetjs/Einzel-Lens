@@ -17,7 +17,7 @@ V2=4000;
 V1=0;
 LensZRange=fc.LensZRange
 PlateSept=1; # Z seperation between the ring
-FlightTubeLength= 100/2; # length of the Cavity (cm)
+FlightTubeLength= 100; # length of the Cavity (cm)
 
 GrandFolder=fc.GrandFolder
 Pathname="SF_Files/"+GrandFolder
@@ -29,18 +29,18 @@ os.chdir(Pathname)
 LensZ=FlightTubeLength/2
 ApertureSizeRange=fc.ApertureRange
 #
-#for ApertureSize in fc.ApertureRange:
-#    ParentFolderName='Aperture=%1.1f' %ApertureSize
+for ApertureSize in fc.ApertureRange:
+    ParentFolderName='Aperture=%1.2f' %ApertureSize
 
 #for PlateSept in fc.NewSeptRange:
 #    ParentFolderName='Sept=%1.2f' %PlateSept
 
 #    ParentFolderName='Voltage=%d' %V2
-for k in range(0,1):
-    ParentFolderName='HalfLength'
+#for k in range(0,1):
+#    ParentFolderName='HalfLength'
     V2=5000
     PlateSept=1
-    ApertureSize=2
+#    ApertureSize=2
 
 
     ##################################### Consts
@@ -183,7 +183,7 @@ for k in range(0,1):
 os.chdir("../../")
 sys.stdout=oldstdout
 
-#os.system("open 'SFBatch - Shortcut.lnk'");
+os.system("open 'SFBatch - Shortcut.lnk'");
 str = raw_input("Press Enter to Continue once superfish has finished running  ");
 
 
@@ -192,15 +192,15 @@ str = raw_input("Press Enter to Continue once superfish has finished running  ")
 #for V2 in fc.VoltageRange:
 #    ParentFolderName='Voltage=%d' %V2
 #
-#for ApertureSize in fc.ApertureRange:
-#    
-#    ParentFolderName='Aperture=%1.1f' %ApertureSize
-#for PlateSept in fc.NewSeptRange:
-#    ParentFolderName='Sept=%1.1f' %PlateSept
-
-for k in range(0,1):
-    ParentFolderName='HalfLength'
+for ApertureSize in fc.ApertureRange:
     
+    ParentFolderName='Aperture=%1.2f' %ApertureSize
+#for PlateSept in fc.NewSeptRange:
+#    ParentFolderName='Sept=%1.2f' %PlateSept
+
+#for k in range(0,1):
+#    ParentFolderName='HalfLength'
+#    
     for i in range(loopmin,loopmax):
         
         VBackPlate=0-250*i;

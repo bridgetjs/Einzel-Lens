@@ -2,46 +2,28 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:VaryParameters/Setupmacro.py">
+   </FileRef>
+   <FileRef
+      location = "group:VaryParameters/macro.py">
+   </FileRef>
+   <FileRef
       location = "group:LensPropertyGen.py">
    </FileRef>
    <FileRef
-      location = "group:VaryParameters/ABeval.py">
-   </FileRef>
-   <FileRef
-      location = "group:VaryParameters/ALens.py">
-   </FileRef>
-   <FileRef
-      location = "group:VaryParameters/AScreen.py">
-   </FileRef>
-   <FileRef
-      location = "group:VaryParameters/ATrajs.py">
-   </FileRef>
-   <FileRef
-      location = "group:VaryParameters/BLens.py">
-   </FileRef>
-   <FileRef
-      location = "group:VaryParameters/BScreen.py">
+      location = "group:VaryParameters/Data and Plots">
    </FileRef>
    <FileRef
       location = "group:VaryParameters/Evaluaters">
    </FileRef>
    <FileRef
-      location = "group:VaryParameters/Nplot.py">
-   </FileRef>
-   <FileRef
       location = "group:VaryParameters/OptimisedT.py">
-   </FileRef>
-   <FileRef
-      location = "group:VaryParameters/Navgplot.py">
    </FileRef>
    <FileRef
       location = "group:VaryParameters/TCont.py">
    </FileRef>
    <FileRef
       location = "group:TSim/maxtest.py">
-   </FileRef>
-   <FileRef
-      location = "group:VaryParameters/Septplot.py">
    </FileRef>
    <FileRef
       location = "group:VaryParameters/Lens&amp;ScreenT.py">
@@ -51,9 +33,6 @@
    </FileRef>
    <FileRef
       location = "group:VaryParameters/TFitPlotter.py">
-   </FileRef>
-   <FileRef
-      location = "group:VaryParameters/traj.py">
    </FileRef>
    <FileRef
       location = "group:VaryParameters/Energy&amp;Trajs.py">

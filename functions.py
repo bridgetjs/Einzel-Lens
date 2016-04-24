@@ -14,6 +14,7 @@ import scipy.constants as sc
 import numpy.random as npr
 import matplotlib.pyplot as plt
 import scipy.stats as st
+oldstdout = sys.stdout
 
 Afile=''
 Bfile=''
@@ -29,11 +30,13 @@ LensZRange=[20,30,40,50,60,70,80,90]
 ScreenPosRange=[30,40,50,60,70,80,90,100]
 InitialPos=0.025
 
-ApertureRange=[2]
+ApertureRange=[2,2.25,2.5,2.75,3,3.5,4,5]
 SeptRange=[0.5,0.75,1,1.5,2,2.5,3]
 NewSeptRange=[1.2,1.4,1.6,1.8]
 TotSeptRange=sorted(SeptRange+NewSeptRange)
 VoltageRange=[4000,4200,4400,4600,4800,5000]
+
+
 
 def data(filename): #function to return the data belonging to an A or B file
     file=open(filename,'r') #Open file name
@@ -41,6 +44,13 @@ def data(filename): #function to return the data belonging to an A or B file
     file.close() #close file
     x=data[:,0]; y=data[:,1]  #read data assuming data is in the exepcted format
     return x,y
+
+def data3(filename): #function to return the data belonging to an A or B file
+    file=open(filename,'r') #Open file name
+    data=np.loadtxt(file) #Load data
+    file.close() #close file
+    x=data[:,0]; y=data[:,1]; z=data[:,2]  #read data assuming data is in the exepcted format
+    return x,y,z
 
 def ABSet(Afilename,Bfilename): #Set file names as global varriables
     global Afile,Bfile
@@ -161,10 +171,23 @@ def PlotModel(Energy,T,Afit,Bfit,sigmax):
     Sigmaarray=[]
     e=sc.e
     T=abs(T)
+    Afit,Bfit=ABFIT()
     for U in Energy:
         sigmaU=np.sqrt( (Afit(U))**2 * (sigmax**2)  +   ( (1.381e-23 * T ) / (2*e*U*1e3)  )  * (Bfit(U))**2   )
         Sigmaarray.append(sigmaU)
     return Sigmaarray
+
+def PlotModel2(Energy,T):
+    Sigmaarray=[]
+    e=sc.e
+    T=abs(T)
+    Afit,Bfit=ABFIT()
+    for U in Energy:
+        sigmaU=np.sqrt( (Afit(U))**2 * (sigmax**2)  +   ( (1.381e-23 * T ) / (2*e*U*1e3)  )  * (Bfit(U))**2   )
+        Sigmaarray.append(sigmaU)
+    return Sigmaarray
+
+
 
 def rms(vec):
     ssum=0
@@ -172,7 +195,7 @@ def rms(vec):
         ssum+=i**2
     return math.sqrt(ssum/len(vec))
 
-def BeamDynWriter(Name,Option,Outputstyle,beam,MCPPos=0.95,InitalPos=0.025,*args):
+def BeamDynWriter(Name,Option,Outputstyle,beam=0,MCPPos=0.95,InitalPos=0.025,Number=2000):
     oldstdout = sys.stdout
     beamdyn=open(Name,'w')
     sys.stdout = beamdyn
@@ -187,13 +210,13 @@ def BeamDynWriter(Name,Option,Outputstyle,beam,MCPPos=0.95,InitalPos=0.025,*args
     print('zlen = 0.002; #bunch length')
     print('radius = 0.002; #bunch radius')
 
-    print('nps  = 2000;		        # Number of particles []')
+    print 'nps  = %d;		        # Number of particles []' %Number
     print('Qtot = -1.e-12 ;		# Total charge in bunch [C]')
     print('nmac = (Qtot/qe)/nps ;		# Initial nmacro')
     print 'InitalZ=%1.3f;' %InitialPos
     if Option=="B":
-        for j in range(1,2000):
-            xmom=-0.5e-4+j*(1e-4/2000)
+        for j in range(1,Number):
+            xmom=-0.5e-4+j*(1e-4/Number)
             print 'setstartpar("beam",0,0,InitalZ,%1.3e,0,0,me,qe,1);' %xmom
     if Option=="A":
         print('setstartline("beam",nps,-radius,0 ,InitalZ,radius,0,InitalZ,0,0,0,me,qe,1);')
@@ -216,8 +239,8 @@ def BeamDynWriter(Name,Option,Outputstyle,beam,MCPPos=0.95,InitalPos=0.025,*args
         for j in range(0,len(beam[0])-1):
             print 'setstartpar("beam",%1.3e,%1.3e,%1.3e,%1.3e,%1.3e,%1.3e,me,qe,1);' %(beam[0][j] ,beam[1][j] ,beam[2][j] ,beam[3][j] ,beam[4][j] ,beam[5][j])
     if Option=="BNonlin":
-        for j in range(1,2000):
-            xmom=-0.65e-3+j*(1.3e-3/2000)
+        for j in range(1,Number):
+            xmom=-0.65e-3+j*(1.3e-3/Number)
             print 'setstartpar("beam",0,0,InitalZ,%1.3e,0,0,me,qe,1);' %xmom
     if Option=="ANonlin":
         print('setstartline("beam",nps,-3*radius,0 ,InitalZ,3*radius,0,InitalZ,0,0,0,me,qe,1);')
@@ -240,14 +263,16 @@ def BeamDynWriter(Name,Option,Outputstyle,beam,MCPPos=0.95,InitalPos=0.025,*args
     sys.stdout=oldstdout
 
 def Fisher():
-    
+#   Run the gpt fish file function
     os.system("fishfile -o fieldmap.gdf -g boundaries.in EinzelLens.am")
+    #Open the file and remove the last five lines : avoid scattering off the ground plate
     file=open("boundaries.in",'r')
     outfile=open("boundaries1.in",'w')
     lines = file.readlines()
     fin = lines[:-5]
     outfile.writelines(fin)
-    file.close()
+#    Close and delete files
+    file.close(); os.remove("boundaries.in")
     outfile.close()
 
 def GPTCall(DynamicFile,GroupBy,Outtxt,*args):
@@ -429,39 +454,44 @@ def Plotter(Infile,FolderName,*args):
         rmsx=rms(finxarray)
         return rmsx
     if 'B' in args:
-        plt.figure(PlotterCounter)
-        PlotterCounter+=1
-        plt.plot(div0array,finxarray,'r.')
-        plt.xlabel('initial divergence (rad)')
-        plt.ylabel('final x (m) ')
-        a0=([0.0, 0.0])
-        fit = optimization.curve_fit(line, div0array, finxarray, a0)
+        fit = optimization.curve_fit(line, div0array, finxarray)
         Bvalue=fit[0][0]
         eB=np.sqrt(np.diag(fit[1])[0])
-        plt.plot(np.asarray(div0array),Bvalue*np.asarray(div0array))
-        plotname="../../../../GPT_B/Archive/"+FolderName
-        plt.savefig(plotname+ ".eps")
-        plt.close()
         return np.mean(initialT),Bvalue,eB
+        
+#        plt.figure(PlotterCounter)
+#        PlotterCounter+=1
+#        plt.plot(div0array,finxarray,'r.')
+#        plt.xlabel('initial divergence (rad)')
+#        plt.ylabel('final x (m) ')
+#         plt.plot(np.asarray(div0array),Bvalue*np.asarray(div0array))
+#        plotname="../../../../GPT_B/Archive/"+FolderName
+#        plt.savefig(plotname+ ".eps")
+#        plt.close()
+
 
     if 'A' in args:
-        plt.figure(PlotterCounter)
-        PlotterCounter+=1
-        
-        plt.plot(inxarray,finxarray,'r.')
-        plt.xlabel('initial x (m)')
-        plt.ylabel('final x (m) ')
         a0=([0.0, 0.0])
-        fit = optimization.curve_fit(line, inxarray, finxarray,a0)
-#            print np.cov(inxarray,finxarray)
+        fit = optimization.curve_fit(line, inxarray, finxarray)
         Avalue=fit[0][0]
-#            print np.sqrt(np.diag(fit[1])[0])
+        #            print np.sqrt(np.diag(fit[1])[0])
         eA=np.sqrt(np.diag(np.cov(inxarray,finxarray))[0])
-        plt.plot(np.asarray(inxarray),Avalue*np.asarray(inxarray))
-        plotname="../../../../GPT_A/Archive/"+FolderName
-        plt.savefig(plotname+ ".eps")
-        plt.close()
+        
         return np.mean(initialT),Avalue,eA
+
+#        plt.figure(PlotterCounter)
+#        PlotterCounter+=1
+#        
+#        plt.plot(inxarray,finxarray,'r.')
+#        plt.xlabel('initial x (m)')
+#        plt.ylabel('final x (m) ')
+#        
+##            print np.cov(inxarray,finxarray)
+#
+#        plt.plot(np.asarray(inxarray),Avalue*np.asarray(inxarray))
+#        plotname="../../../../GPT_A/Archive/"+FolderName
+#        plt.savefig(plotname+ ".eps")
+#        plt.close()
 
     if 'Tz' in args:
         plt.figure(TZfig)
@@ -494,9 +524,33 @@ def Plotter(Infile,FolderName,*args):
         plt.plot()
         plt.xlabel('z (m)')
         plt.ylabel('Mean beam energy (keV)')
+    if 'Aplot' in args:
+        fit = optimization.curve_fit(line, inxarray, finxarray)
+        Avalue=fit[0][0]
+        eA=np.sqrt(np.diag(np.cov(inxarray,finxarray))[0])
+        
+        plt.figure(1)
+        
+        plt.plot(inxarray,finxarray,'r.')
+        plt.xlabel('initial x (m)')
+        plt.ylabel('final x (m) ')
+        plt.plot(np.asarray(inxarray),Avalue*np.asarray(inxarray))
+
+    if 'Bplot' in args:
+        fit = optimization.curve_fit(line, div0array, finxarray)
+        Bvalue=fit[0][0]
+        eB=np.sqrt(np.diag(fit[1])[0])
+        
+        plt.figure(2)
+       
+        plt.plot(div0array,finxarray,'r.')
+        plt.xlabel('initial divergence (rad)')
+        plt.ylabel('final x (m) ')
+        plt.plot(np.asarray(div0array),Bvalue*np.asarray(div0array))
 
     if 'show' in args:
         plt.show()
+
 
 
 def EinzelLensGen(Var,Range):
@@ -505,5 +559,202 @@ def EinzelLensGen(Var,Range):
 def Eplotter():
     infile='SHORTOUTSF7.TXT'
 
+def GPTrun(ParentFolder,Mode,Temp=10,N=2000,ScreenPos=100):
+    print N,Temp,ScreenPos,ParentFolder
+    
+    Ulist=[]
+    if Mode=='T':
+        stdlist=[]
+        estdlist=[]
+    if Mode=='A':
+        A_list=[]
+        eA_list=[]
+    if Mode=='B':
+        B_list=[]
+        eB_list=[]
 
+    for i in range(1,21):
+        sys.stdout=oldstdout
+        VBackPlate=0-250*i;
+        FolderName='VBack=%d' %VBackPlate
+        Path="../" +Pathname +"/"+ ParentFolder+"/"+FolderName
+        
+        if  os.path.exists(Path):
+            os.chdir(Path);
+        else:
+            print "Shit's fucked with ",Path
+            sys.exit()
+        
+        Fisher()
+
+        if Mode=='T':
+            print "Running real bunch simulation in "+ FolderName
+            U=[]
+            stdx=[]
+            for j in range(0,10):
+                dynfile="TSim_beamdyn.in"
+                beam=BeamGenerator(N,Temp,sigmax,InitialPos)#N,T,sigma,central Z position
+                BeamDynWriter(dynfile,"beam","Screens",beam,ScreenPos)
+                        #                DynamicFile,     GroupBy,    Outtxt
+                GPTCall(dynfile,"position","std1.txt",'std')
+                        
+                ScreenSTD,E=Plotter("std1.txt",FolderName,'RealBunchStds')
+                stdx.append(ScreenSTD)#Calculate std of final positions
+                U.append(E) #Add intial energy to array
+                os.remove(dynfile)
+            
+            Ulist.append(np.mean(U))
+            stdlist.append(np.mean(stdx))
+            estdlist.append(np.std(stdx))
+        if Mode=='A':
+            print "Running A study in "+ FolderName
+            dynfile="A_beamdyn.in"
+            BeamDynWriter(dynfile,"A","Screens",MCPPos=ScreenPos,InitalPos=InitialPos)
+        #           DynamicFile,     GroupBy,    Outtxt
+            GPTCall(dynfile,"position","stdA.txt")
+    
+            U_i,A,eA=Plotter("stdA.txt",FolderName,i,'inx','finx','A')
+            A_list.append(A)
+            eA_list.append(eA)
+            Ulist.append(U_i)
+            os.remove(dynfile)
+        if Mode=='B':
+            print "Running B study in "+ FolderName
+            dynfile="B_beamdyn.in"
+            BeamDynWriter(dynfile,"B","Screens",MCPPos=ScreenPos,InitalPos=InitialPos)
+        #           DynamicFile,     GroupBy,    Outtxt
+            GPTCall(dynfile,"position","stdB.txt")
+            U_i,B,eB=Plotter("stdB.txt",FolderName,i,'inx','div0','finx','B')
+            B_list.append(B)
+            eB_list.append(eB)
+            Ulist.append(U_i)
+            os.remove(dynfile)
+
+        os.chdir("../../../../VaryParameters")
+            
+            
+    if Mode=='T':
+        return TFit(Ulist,stdlist,estdlist,Temp)
+    if Mode=='A':
+        AfileName='Avals/Adata(%s).txt' %ParentFolder
+        Afile=open(AfileName,'w')
+        S= Ulist , A_list, eA_list
+        np.savetxt(Afile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)
+        Afile.close()
+    if Mode=='B':
+        BfileName='BVals/Bdata(%s).txt' %ParentFolder
+        Bfile=open(BfileName,'w')
+        S= Ulist, B_list, eB_list
+        np.savetxt(Bfile,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)
+        Bfile.close()
+
+#np.mean(U),np.mean(stdx),np.std(stdx)
+
+def TFit(Ulist,stdlist,estdlist,Temp,figureN=25):
+    Afit,Bfit=ABFIT()
+    plt.figure(figureN)
+    plt.errorbar(np.asarray(Ulist),np.asarray(stdlist),np.asarray(estdlist),fmt='.',markersize=0)
+    Tfit=optimization.curve_fit(Model2, Ulist, stdlist,sigma=estdlist, maxfev=100000,p0=Temp)
+    Tfitted=Tfit[0][0]
+    eTfitted=np.sqrt(np.diag(Tfit[1])[0])
+    print 'Temperature = %2.3f +/- %2.3f' %(Tfitted,eTfitted)
+    plt.plot(Ulist,PlotModel2(Ulist,Tfitted),label='T=(%2.1f $\pm$ %2.1f)K' %(Tfitted,eTfitted))
+    return Tfitted,eTfitted
+
+def SingleGPTRun(ParentFolder,Voltage=-1000,Mode='TTraj',Temp=10,N=2000,ScreenPos=100):
+    
+    FolderName='VBack=%d' %Voltage
+    Path="../" +Pathname +"/"+ ParentFolder+"/"+FolderName
+        
+    if  os.path.exists(Path):
+        os.chdir(Path);
+    else:
+        print "Shit's fucked with ",Path
+        sys.exit()
+        
+    Fisher()
+    if Mode=='TTraj':
+        dynfile="beamdyn_Traj.in"
+        beam=BeamGenerator(N,Temp,sigmax,InitialPos)
+        BeamDynWriter(dynfile,"beam","Snaps",beam)
+        
+        print "Running real bunch simulation in "+ FolderName
+        #                DynamicFile,     GroupBy,    Outtxt
+        GPTCall(dynfile,"time","std1.txt")
+        
+        Plotter("std1.txt",FolderName,'xz','yz','Tz','show')
+        os.remove(dynfile)
+
+    if Mode=='ATraj':
+        dynfile="beamdyn_ATraj.in"
+
+        BeamDynWriter(dynfile,"A","Snaps",Number=N)
+            
+        print "Running A study in "+ FolderName
+        #                DynamicFile,     GroupBy,    Outtxt
+        GPTCall(dynfile,"time","std1.txt")
+        
+        Plotter("std1.txt",FolderName,'xz','show')
+        os.remove(dynfile)
+    if Mode=='BTraj':
+        dynfile="beamdyn_BTraj.in"
+        beam=BeamGenerator(N,Temp,sigmax,InitialPos)
+        BeamDynWriter(dynfile,"B","Snaps",Number=N)
+                
+        print "Running Bstudy in "+ FolderName
+        #                DynamicFile,     GroupBy,    Outtxt
+        GPTCall(dynfile,"time","std1.txt")
+            
+        Plotter("std1.txt",FolderName,'xz','show')
+        os.remove(dynfile)
+    if Mode=='A':
+        print "Running A study in "+ FolderName
+        dynfile="A_beamdyn.in"
+        BeamDynWriter(dynfile,"A","Screens",MCPPos=ScreenPos,InitalPos=InitialPos,Number=N)
+        #           DynamicFile,     GroupBy,    Outtxt
+        GPTCall(dynfile,"position","stdA.txt")
+
+        Plotter("stdA.txt",FolderName,'inx','finx','Aplot','show')
+        os.remove(dynfile)
+    if Mode=='B':
+        print "Running A study in "+ FolderName
+        dynfile="B_beamdyn.in"
+        BeamDynWriter(dynfile,"B","Screens",MCPPos=ScreenPos,InitalPos=InitialPos,Number=N)
+        #           DynamicFile,     GroupBy,    Outtxt
+        GPTCall(dynfile,"position","stdB.txt")
+        
+        Plotter("stdB.txt",FolderName,'inx','div0','finx','Bplot','show')
+        os.remove(dynfile)
+    os.chdir("../../../../VaryParameters")
+
+def LensGenerator(my_test,var='test'):
+
+    for Test in my_test:
+        ParentFolder='Test=%1.2f' %Test
+#        ParentFolder='Tuned2'
+        for i in range(1,21):
+            sys.stdout=oldstdout
+            VBackPlate=0-250*i;
+            FolderName='VBack=%d' %VBackPlate
+            print "Generating in "+ FolderName
+            Path="../" +Pathname +"/"+ ParentFolder+"/"+FolderName
+            print Path
+            if not os.path.exists(Path):
+                os.makedirs(Path);
+    
+            os.chdir(Path);
+            print os.getcwd()
+            fid4=open('Batch.bat','w');
+            sys.stdout = fid4
+            print ('del %0')
+            fid4.close();
+            os.chdir("../../../../VaryParameters")
+
+    os.system("open '../SFBatch - Shortcut.lnk'");
+
+def Saver(filename,*args):
+    S=args
+    file=open(filename,'w')
+    np.savetxt(file,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)
+    file.close()
 

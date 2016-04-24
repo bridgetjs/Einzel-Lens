@@ -110,6 +110,7 @@ for Temp in TempRange:
             stdx2=[] #Array for single voltage standard deviations
             UI2=[] #Array for single voltage initial energies
             for j in range(0,10):
+                
                 beam=fc.BeamGenerator(N,Temp,InitialSize,fc.InitialPos)#N,T,sigma,central Z position
                 fc.BeamDynWriter("beamdynMRFCTest.in","beam","Screens",beam,ScreenPos)
             

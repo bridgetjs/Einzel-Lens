@@ -25,8 +25,8 @@ for indx,ApertureSize in enumerate(fc.ApertureRange):
     
     ParentFolderName='Aperture=%1.1f' %ApertureSize
     
-    AfileName='../Avals/Adata(Aperture=%1.1f).txt' %(ApertureSize)
-    BfileName='../BVals/Bdata(Aperture=%1.1f).txt' %(ApertureSize)
+    AfileName='../../Avals/Adata(Aperture=%1.1f).txt' %(ApertureSize)
+    BfileName='../../BVals/Bdata(Aperture=%1.1f).txt' %(ApertureSize)
     
     
     A,eA=data(AfileName)
