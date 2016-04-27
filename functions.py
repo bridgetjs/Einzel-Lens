@@ -26,15 +26,15 @@ PlotterCounter=1
 #GrandFolder="LensPosVar"
 GrandFolder="LensPropVar"
 Pathname="SF_Files/"+GrandFolder
-LensZRange=[20,30,40,50,60,70,80,90]
-ScreenPosRange=[30,40,50,60,70,80,90,100]
-InitialPos=0.025
+LensZRange=[15,20,25,30,35,40]
+ScreenPosRange=[20,25,30,35,40,45,50]
+Z0=0.025
 
-ApertureRange=[2,2.25,2.5,2.75,3,3.5,4,5]
-SeptRange=[0.5,0.75,1,1.5,2,2.5,3]
+ApertureRange=[2,2.5,3,3.5,4,4.5,5]
+SeptRange=[0.5,0.75,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3,3.25,3.5]
 NewSeptRange=[1.2,1.4,1.6,1.8]
 TotSeptRange=sorted(SeptRange+NewSeptRange)
-VoltageRange=[4000,4200,4400,4600,4800,5000]
+VoltageRange=[3000,3500,4000,4500,5000]
 
 
 
@@ -111,7 +111,7 @@ def Maxwell(N,T): #Produce a Boltzmann distribution
     return Vx,Px,Vy,Py,Vz,Pz
 
 def BeamGenerator(N,T,sigma,centreZ):
-    
+#    print centreZ
     Ntot=10*N
     c=sc.c
     Vx,Px,Vy,Py,Vz,Pz=Maxwell(Ntot,T)
@@ -146,20 +146,20 @@ def ABCheck():
     UA,A=data(Afile)
     UB,B=data(Bfile)
     
-    plt.figure(1)
+    plt.figure(51)
     plt.plot(UA,Afit(UA))
     plt.plot(UA,A,'.')
     plt.xlabel('U (keV)')
     plt.ylabel('A (no units)')
 
-    plt.figure(2)
+    plt.figure(52)
     plt.plot(UB,Bfit(UB))
     plt.plot(UB,B,'.')
     plt.xlabel('U (keV)')
     plt.ylabel('B m/rad')
     plt.show()
+
 def Model2(U,T):
-    
     e=sc.e
 #    T=abs(T)
     Afit,Bfit=ABFIT()
@@ -195,7 +195,8 @@ def rms(vec):
         ssum+=i**2
     return math.sqrt(ssum/len(vec))
 
-def BeamDynWriter(Name,Option,Outputstyle,beam=0,MCPPos=0.95,InitalPos=0.025,Number=2000):
+def BeamDynWriter(Name,Option,Outputstyle,beam=0,MCPPos=50,InitialPos=0.025,Number=2000):
+#    print MCPPos,InitialPos
     oldstdout = sys.stdout
     beamdyn=open(Name,'w')
     sys.stdout = beamdyn
@@ -213,13 +214,13 @@ def BeamDynWriter(Name,Option,Outputstyle,beam=0,MCPPos=0.95,InitalPos=0.025,Num
     print 'nps  = %d;		        # Number of particles []' %Number
     print('Qtot = -1.e-12 ;		# Total charge in bunch [C]')
     print('nmac = (Qtot/qe)/nps ;		# Initial nmacro')
-    print 'InitalZ=%1.3f;' %InitialPos
+    print 'InitialZ=%1.3f;' %InitialPos
     if Option=="B":
         for j in range(1,Number):
             xmom=-0.5e-4+j*(1e-4/Number)
-            print 'setstartpar("beam",0,0,InitalZ,%1.3e,0,0,me,qe,1);' %xmom
+            print 'setstartpar("beam",0,0,%1.3f,%1.3e,0,0,me,qe,1);' %(InitialPos,xmom)
     if Option=="A":
-        print('setstartline("beam",nps,-radius,0 ,InitalZ,radius,0,InitalZ,0,0,0,me,qe,1);')
+        print('setstartline("beam",nps,-radius,0 ,InitialZ,radius,0,InitialZ,0,0,0,me,qe,1);')
     if Option=="GenBunch":
 #        Call Maxwell Generation?
         print('Tbunch=10;')
@@ -241,9 +242,9 @@ def BeamDynWriter(Name,Option,Outputstyle,beam=0,MCPPos=0.95,InitalPos=0.025,Num
     if Option=="BNonlin":
         for j in range(1,Number):
             xmom=-0.65e-3+j*(1.3e-3/Number)
-            print 'setstartpar("beam",0,0,InitalZ,%1.3e,0,0,me,qe,1);' %xmom
+            print 'setstartpar("beam",0,0,InitialZ,%1.3e,0,0,me,qe,1);' %xmom
     if Option=="ANonlin":
-        print('setstartline("beam",nps,-3*radius,0 ,InitalZ,3*radius,0,InitalZ,0,0,0,me,qe,1);')
+        print('setstartline("beam",nps,-3*radius,0 ,InitialZ,3*radius,0,InitialZ,0,0,0,me,qe,1);')
 
     print('map2D_E("wcs","z",0,"fieldmap.gdf","R","Z","Er","Ez",1) ;')
     print('Zcol=0;')
@@ -255,7 +256,7 @@ def BeamDynWriter(Name,Option,Outputstyle,beam=0,MCPPos=0.95,InitalPos=0.025,Num
         print 'screen("wcs","I",%f);' %(MCPPos/100)
         print('screen("wcs","I",0.1);')
     if Outputstyle=="Snaps":
-        print('snapshot(0,1.2e-7,5e-11);')
+        print('snapshot(0,1e-7,5e-11);')
     if Outputstyle=="Touts":
         print ('tout(0,5e-8,5e-11) ;')
 
@@ -363,13 +364,12 @@ def Plotter(Infile,FolderName,*args):
                 plt.figure(TZfig)
                 plt.plot(thispartz,thispartT)
             if 'Efields' in args:
-                    plt.figure(Efig)
-                    plt.plot(thispartz,Ex)
+                plt.figure(Efig)
+                plt.plot(thispartz,Ex)
         
             if 'RealBunchStds' in args:
                 ScreenStd=float(thispartx[1])
                 InitialKin=float(thispartT[0])
-        
         
             if 'RealBunchShape' in args:
                 ScreenStdx=float(thispartx[1])
@@ -559,8 +559,13 @@ def EinzelLensGen(Var,Range):
 def Eplotter():
     infile='SHORTOUTSF7.TXT'
 
-def GPTrun(ParentFolder,Mode,Temp=10,N=2000,ScreenPos=100):
-    print N,Temp,ScreenPos,ParentFolder
+def GPTrun(ParentFolder,Mode,Temp=10,N=2000,ScreenPos=50,InitialZ=0.025,BunchSize=0.002):
+    global sigmax
+    if sigmax!=BunchSize:
+        
+        sigmax=BunchSize
+    
+    print N,Temp,ScreenPos,ParentFolder,InitialZ,sigmax
     
     Ulist=[]
     if Mode=='T':
@@ -593,7 +598,7 @@ def GPTrun(ParentFolder,Mode,Temp=10,N=2000,ScreenPos=100):
             stdx=[]
             for j in range(0,10):
                 dynfile="TSim_beamdyn.in"
-                beam=BeamGenerator(N,Temp,sigmax,InitialPos)#N,T,sigma,central Z position
+                beam=BeamGenerator(N,Temp,BunchSize,InitialZ)#N,T,sigma,central Z position
                 BeamDynWriter(dynfile,"beam","Screens",beam,ScreenPos)
                         #                DynamicFile,     GroupBy,    Outtxt
                 GPTCall(dynfile,"position","std1.txt",'std')
@@ -609,7 +614,7 @@ def GPTrun(ParentFolder,Mode,Temp=10,N=2000,ScreenPos=100):
         if Mode=='A':
             print "Running A study in "+ FolderName
             dynfile="A_beamdyn.in"
-            BeamDynWriter(dynfile,"A","Screens",MCPPos=ScreenPos,InitalPos=InitialPos)
+            BeamDynWriter(dynfile,"A","Screens",MCPPos=ScreenPos,InitialPos=InitialZ)
         #           DynamicFile,     GroupBy,    Outtxt
             GPTCall(dynfile,"position","stdA.txt")
     
@@ -617,18 +622,18 @@ def GPTrun(ParentFolder,Mode,Temp=10,N=2000,ScreenPos=100):
             A_list.append(A)
             eA_list.append(eA)
             Ulist.append(U_i)
-            os.remove(dynfile)
+#            os.remove(dynfile)
         if Mode=='B':
             print "Running B study in "+ FolderName
             dynfile="B_beamdyn.in"
-            BeamDynWriter(dynfile,"B","Screens",MCPPos=ScreenPos,InitalPos=InitialPos)
+            BeamDynWriter(dynfile,"B","Screens",MCPPos=ScreenPos,InitialPos=InitialZ)
         #           DynamicFile,     GroupBy,    Outtxt
             GPTCall(dynfile,"position","stdB.txt")
             U_i,B,eB=Plotter("stdB.txt",FolderName,i,'inx','div0','finx','B')
             B_list.append(B)
             eB_list.append(eB)
             Ulist.append(U_i)
-            os.remove(dynfile)
+#            os.remove(dynfile)
 
         os.chdir("../../../../VaryParameters")
             
@@ -661,7 +666,7 @@ def TFit(Ulist,stdlist,estdlist,Temp,figureN=25):
     plt.plot(Ulist,PlotModel2(Ulist,Tfitted),label='T=(%2.1f $\pm$ %2.1f)K' %(Tfitted,eTfitted))
     return Tfitted,eTfitted
 
-def SingleGPTRun(ParentFolder,Voltage=-1000,Mode='TTraj',Temp=10,N=2000,ScreenPos=100):
+def SingleGPTRun(ParentFolder,Voltage=-1000,Mode='TTraj',Temp=10,N=50,ScreenPos=50,InitialZ=0.025):
     
     FolderName='VBack=%d' %Voltage
     Path="../" +Pathname +"/"+ ParentFolder+"/"+FolderName
@@ -675,7 +680,7 @@ def SingleGPTRun(ParentFolder,Voltage=-1000,Mode='TTraj',Temp=10,N=2000,ScreenPo
     Fisher()
     if Mode=='TTraj':
         dynfile="beamdyn_Traj.in"
-        beam=BeamGenerator(N,Temp,sigmax,InitialPos)
+        beam=BeamGenerator(N,Temp,sigmax,InitialZ)
         BeamDynWriter(dynfile,"beam","Snaps",beam)
         
         print "Running real bunch simulation in "+ FolderName
@@ -684,11 +689,22 @@ def SingleGPTRun(ParentFolder,Voltage=-1000,Mode='TTraj',Temp=10,N=2000,ScreenPo
         
         Plotter("std1.txt",FolderName,'xz','yz','Tz','show')
         os.remove(dynfile)
+    if Mode=='E':
+        dynfile="beamdyn_E.in"
+        beam=BeamGenerator(N,Temp,sigmax,InitialZ)
+        BeamDynWriter(dynfile,"beam","Snaps",beam)
+        
+        print "Running real bunch simulation in "+ FolderName
+        #                DynamicFile,     GroupBy,    Outtxt
+        GPTCall(dynfile,"time","std1.txt",'std')
+        
+        Plotter("std1.txt",FolderName,'Tz','show')
+        os.remove(dynfile)
 
     if Mode=='ATraj':
         dynfile="beamdyn_ATraj.in"
 
-        BeamDynWriter(dynfile,"A","Snaps",Number=N)
+        BeamDynWriter(dynfile,"A","Snaps",Number=N,InitialPos=InitialZ)
             
         print "Running A study in "+ FolderName
         #                DynamicFile,     GroupBy,    Outtxt
@@ -698,8 +714,8 @@ def SingleGPTRun(ParentFolder,Voltage=-1000,Mode='TTraj',Temp=10,N=2000,ScreenPo
         os.remove(dynfile)
     if Mode=='BTraj':
         dynfile="beamdyn_BTraj.in"
-        beam=BeamGenerator(N,Temp,sigmax,InitialPos)
-        BeamDynWriter(dynfile,"B","Snaps",Number=N)
+        
+        BeamDynWriter(dynfile,"B","Snaps",Number=N,InitialPos=InitialZ)
                 
         print "Running Bstudy in "+ FolderName
         #                DynamicFile,     GroupBy,    Outtxt
@@ -710,7 +726,7 @@ def SingleGPTRun(ParentFolder,Voltage=-1000,Mode='TTraj',Temp=10,N=2000,ScreenPo
     if Mode=='A':
         print "Running A study in "+ FolderName
         dynfile="A_beamdyn.in"
-        BeamDynWriter(dynfile,"A","Screens",MCPPos=ScreenPos,InitalPos=InitialPos,Number=N)
+        BeamDynWriter(dynfile,"A","Screens",MCPPos=ScreenPos,InitialPos=InitialZ,Number=N)
         #           DynamicFile,     GroupBy,    Outtxt
         GPTCall(dynfile,"position","stdA.txt")
 
@@ -719,12 +735,13 @@ def SingleGPTRun(ParentFolder,Voltage=-1000,Mode='TTraj',Temp=10,N=2000,ScreenPo
     if Mode=='B':
         print "Running A study in "+ FolderName
         dynfile="B_beamdyn.in"
-        BeamDynWriter(dynfile,"B","Screens",MCPPos=ScreenPos,InitalPos=InitialPos,Number=N)
+        BeamDynWriter(dynfile,"B","Screens",MCPPos=ScreenPos,InitialPos=InitialZ,Number=N)
         #           DynamicFile,     GroupBy,    Outtxt
         GPTCall(dynfile,"position","stdB.txt")
         
         Plotter("stdB.txt",FolderName,'inx','div0','finx','Bplot','show')
         os.remove(dynfile)
+
     os.chdir("../../../../VaryParameters")
 
 def LensGenerator(my_test,var='test'):

@@ -12,12 +12,12 @@ oldstdout = sys.stdout
 
 
 ####### TO VARY
-ApertureSize=2
-V2=4000;
+ApertureSize=3.5
+V2=5000;
 V1=0;
 LensZRange=fc.LensZRange
 PlateSept=1; # Z seperation between the ring
-FlightTubeLength= 100; # length of the Cavity (cm)
+FlightTubeLength= 50; # length of the Cavity (cm)
 
 GrandFolder=fc.GrandFolder
 Pathname="SF_Files/"+GrandFolder
@@ -26,22 +26,15 @@ if not os.path.exists(Pathname):
     os.makedirs(Pathname)
 os.chdir(Pathname)
 
-LensZ=FlightTubeLength/2
-ApertureSizeRange=fc.ApertureRange
+LensZ=30
+ApertureSizeRange=[3.5,4]
+
+#fc.ApertureRange
 #
-for ApertureSize in fc.ApertureRange:
-    ParentFolderName='Aperture=%1.2f' %ApertureSize
+for LensZ in fc.LensZRange:
+    ParentFolderName='Pos=%d' %LensZ
 
-#for PlateSept in fc.NewSeptRange:
-#    ParentFolderName='Sept=%1.2f' %PlateSept
-
-#    ParentFolderName='Voltage=%d' %V2
-#for k in range(0,1):
-#    ParentFolderName='HalfLength'
-    V2=5000
-    PlateSept=1
-#    ApertureSize=2
-
+#    ParentFolderName='Aperture=%1.2f' %ApertureSize
 
     ##################################### Consts
     GroundRingRad=0
@@ -60,7 +53,7 @@ for ApertureSize in fc.ApertureRange:
     InnerElectrodeRingRad=ApertureSize; #Radius of the Inner Electrode Ring
 
     coz2=LensZ-InnerPlateDepth/2; # Middle plate is centered
-    coz1=coz2-PlateSept - OuterPlateDepth; #position first plate
+    coz1=coz2 - PlateSept - OuterPlateDepth; #position first plate
     coz3=coz2 + PlateSept + InnerPlateDepth;
     PosBackPlate=0;
     PosGroundPlate=10
@@ -178,8 +171,10 @@ for ApertureSize in fc.ApertureRange:
         print('START /wait C:\\LANL\\Poisson.exe  "Z:\\Documents\\MPhys Project\\Einzel Lens\\SF_files\\'+GrandFolder+'\\'+ParentFolderName+'\\'+FolderName+'\\EINZELLENS.T35" \r\n');
         print('START /wait  C:\\LANL\\SF7.EXE "Z:\\Documents\\MPhys Project\\Einzel Lens\\SF_files\\'+GrandFolder+'\\'+ParentFolderName+'\\'+FolderName+'\\EINZELLENS.IN7" \r\n ');
         print ('del %0')
+        
         fid4.close();
-        os.chdir("../../");
+        os.chdir("../../")
+
 os.chdir("../../")
 sys.stdout=oldstdout
 
@@ -189,18 +184,21 @@ str = raw_input("Press Enter to Continue once superfish has finished running  ")
 
 
 ###############################################  Prepare OUTSF7 Files for GPT    ###############################################################
-#for V2 in fc.VoltageRange:
-#    ParentFolderName='Voltage=%d' %V2
+for V2 in fc.VoltageRange:
+    ParentFolderName='Voltage=%d' %V2
 #
-for ApertureSize in fc.ApertureRange:
-    
-    ParentFolderName='Aperture=%1.2f' %ApertureSize
-#for PlateSept in fc.NewSeptRange:
+#for ApertureSize in fc.ApertureRange:
+#    
+#    ParentFolderName='Aperture=%1.2f' %ApertureSize
+#for PlateSept in [1]:
 #    ParentFolderName='Sept=%1.2f' %PlateSept
 
 #for k in range(0,1):
 #    ParentFolderName='HalfLength'
-#    
+#
+for LensZ in fc.LensZRange:
+    ParentFolderName='Pos=%d' %LensZ
+    
     for i in range(loopmin,loopmax):
         
         VBackPlate=0-250*i;
@@ -221,5 +219,5 @@ for ApertureSize in fc.ApertureRange:
 
         fin=np.loadtxt(infile,skiprows=numline)
         np.savetxt(outfile, fin, fmt='%1.5e', delimiter='\t', header = '\tR\t\tZ\t\tEr\t\tEz\t\tabsE\t\tV', comments='')
-
+        os.remove(infile)
 sys.stdout=oldstdout

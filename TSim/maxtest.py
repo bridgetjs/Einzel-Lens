@@ -31,12 +31,23 @@ for j in range(0,N):
     V.append(thisV)
     P.append(4*pi*thisV**2*Px[j][0]* Py[j][0]* Pz[j][0]) # P=4*pi^2 V^2 Px*Py*Pz
 
-plt.figure(1)
+plt.figure(5)
 n, Vels,patches=plt.hist(V, bins=100, color='green',alpha=0.75,normed=True)
 Boltz=np.sqrt((m/(2*pi*k*T))**(3)) *4*pi*Vels**2 * np.exp((-m/(2*k*T))*Vels**2)
 plt.plot(Vels,Boltz,'k',linewidth=1.5,label='10 K Maxwell-Boltzmann distribution')
 plt.xlabel('Velocity (m/s)',fontsize=16)
 plt.ylabel('Probability',fontsize=16)
 plt.legend(fontsize=16)
-print Boltz
+#print Boltz
+
+
+beam=fc.BeamGenerator(10000,T,2e-3,0.05)
+plt.figure(6)
+plt.plot(beam[0],beam[2],'.')
+plt.show()
+
+
+
+
+
 plt.show()

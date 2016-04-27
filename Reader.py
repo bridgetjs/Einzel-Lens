@@ -30,8 +30,13 @@ LensZ=50
 ApertureSizeRange=fc.ApertureRange
 
 ###############################################  Prepare OUTSF7 Files for GPT    ###############################################################
-for PlateSept in fc.NewSeptRange:
-    ParentFolderName='Sept=%1.2f' %PlateSept
+#for PlateSept in [1]:
+#    ParentFolderName='Sept=%1.2f' %PlateSept
+#    ParentFolderName='Halflength2'
+#    
+for ApertureSize in fc.ApertureRange:
+    
+    ParentFolderName='Aperture=%1.2f' %ApertureSize
     
     for i in range(loopmin,loopmax):
         
@@ -48,10 +53,12 @@ for PlateSept in fc.NewSeptRange:
         print('Reading from', infile,' Processing for GPT input') #
         #Header line
         p="         R             Z                Er         Ez             absE             V\n"
-
+        
         headerfinish=False
 
         fin=np.loadtxt(infile,skiprows=numline)
         np.savetxt(outfile, fin, fmt='%1.5e', delimiter='\t', header = '\tR\t\tZ\t\tEr\t\tEz\t\tabsE\t\tV', comments='')
+        
+        os.remove(infile)
 
 sys.stdout=oldstdout

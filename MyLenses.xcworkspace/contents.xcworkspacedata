@@ -2,6 +2,12 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:VaryParameters/OldCodes">
+   </FileRef>
+   <FileRef
+      location = "group:VaryParameters/Data_and_Plots">
+   </FileRef>
+   <FileRef
       location = "group:VaryParameters/Setupmacro.py">
    </FileRef>
    <FileRef
@@ -11,36 +17,21 @@
       location = "group:LensPropertyGen.py">
    </FileRef>
    <FileRef
-      location = "group:VaryParameters/Data and Plots">
-   </FileRef>
-   <FileRef
       location = "group:VaryParameters/Evaluaters">
-   </FileRef>
-   <FileRef
-      location = "group:VaryParameters/OptimisedT.py">
-   </FileRef>
-   <FileRef
-      location = "group:VaryParameters/TCont.py">
    </FileRef>
    <FileRef
       location = "group:TSim/maxtest.py">
    </FileRef>
    <FileRef
-      location = "group:VaryParameters/Lens&amp;ScreenT.py">
-   </FileRef>
-   <FileRef
       location = "group:VaryParameters/test.py">
-   </FileRef>
-   <FileRef
-      location = "group:VaryParameters/TFitPlotter.py">
-   </FileRef>
-   <FileRef
-      location = "group:VaryParameters/Energy&amp;Trajs.py">
    </FileRef>
    <FileRef
       location = "group:Reader.py">
    </FileRef>
    <FileRef
       location = "group:functions.py">
+   </FileRef>
+   <FileRef
+      location = "group:VaryParameters/LensPosition.py">
    </FileRef>
 </Workspace>
