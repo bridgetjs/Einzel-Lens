@@ -30,8 +30,9 @@ LensZRange=[15,20,25,30,35,40]
 ScreenPosRange=[20,25,30,35,40,45,50]
 Z0=0.025
 
-ApertureRange=[2,2.5,3,3.5,4,4.5,5]
-SeptRange=[0.5,0.75,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3,3.25,3.5]
+ApertureRange=[2,2.5,3,3.5,4,4.5]
+#SeptRange=[0.5,0.75,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3,3.25,3.5]
+SeptRange=[0.5,0.75,1,1.25,1.5,1.75,2,2.25,2.5]
 NewSeptRange=[1.2,1.4,1.6,1.8]
 TotSeptRange=sorted(SeptRange+NewSeptRange)
 VoltageRange=[3000,3500,4000,4500,5000]
@@ -774,4 +775,28 @@ def Saver(filename,*args):
     file=open(filename,'w')
     np.savetxt(file,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)
     file.close()
+
+def Superfish2GPT(Array,Name,min=1,max=21):
+    
+    for Val in Array:
+        ParentFolder='%s=%1.2f' %(Name,Val)
+        for i in range(min,max):
+
+            VBackPlate=0-250*i;
+            #Print a string with the Voltages of the Plates
+            FolderName2='VBack=%d' %VBackPlate
+            #Make and change to the corresponding directory
+            infile=Pathname + "/"+ParentFolder+"/"+FolderName2+"/"+"OUTSF7.TXT" # Infile path
+            outfile=Pathname + "/"+ParentFolder+"/"+FolderName2+"/"+"SHORTOUTSF7.TXT" # Outfile path
+            numline=34 # skip the header
+            print'Reading from', infile,' Processing for GPT input' #
+            #Header line
+            p="         R             Z                Er         Ez             absE             V\n"
+            
+            headerfinish=False
+            
+            fin=np.loadtxt(infile,skiprows=numline)
+            np.savetxt(outfile, fin, fmt='%1.5e', delimiter='\t', header = '\tR\t\tZ\t\tEr\t\tEz\t\tabsE\t\tV', comments='')
+            os.remove(infile)
+
 
