@@ -32,11 +32,10 @@ Z0=0.025
 
 ApertureRange=[2,2.5,3,3.5,4,4.5]
 #SeptRange=[0.5,0.75,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3,3.25,3.5]
-SeptRange=[0.5,0.75,1,1.25,1.5,1.75,2,2.25,2.5]
-NewSeptRange=[1.2,1.4,1.6,1.8]
+SeptRange=[0.5,0.75,1,1.25,1.5,1.75,2]
+NewSeptRange=[0.3,0.4]
 TotSeptRange=sorted(SeptRange+NewSeptRange)
 VoltageRange=[3000,3500,4000,4500,5000]
-
 
 
 def data(filename): #function to return the data belonging to an A or B file
@@ -222,6 +221,7 @@ def BeamDynWriter(Name,Option,Outputstyle,beam=0,MCPPos=50,InitialPos=0.025,Numb
             print 'setstartpar("beam",0,0,%1.3f,%1.3e,0,0,me,qe,1);' %(InitialPos,xmom)
     if Option=="A":
         print('setstartline("beam",nps,-radius,0 ,InitialZ,radius,0,InitialZ,0,0,0,me,qe,1);')
+#   Weird built in distribution -- doesn't work???
     if Option=="GenBunch":
 #        Call Maxwell Generation?
         print('Tbunch=10;')
@@ -237,7 +237,6 @@ def BeamDynWriter(Name,Option,Outputstyle,beam=0,MCPPos=50,InitialPos=0.025,Numb
         print('setGByemittance( "beam", 2e-9 ) ;')
         print('setGdist("beam","u", G, dE*(G-1) ) ;')
     if Option=="beam":
-        
         for j in range(0,len(beam[0])-1):
             print 'setstartpar("beam",%1.3e,%1.3e,%1.3e,%1.3e,%1.3e,%1.3e,me,qe,1);' %(beam[0][j] ,beam[1][j] ,beam[2][j] ,beam[3][j] ,beam[4][j] ,beam[5][j])
     if Option=="BNonlin":
@@ -246,7 +245,6 @@ def BeamDynWriter(Name,Option,Outputstyle,beam=0,MCPPos=50,InitialPos=0.025,Numb
             print 'setstartpar("beam",0,0,InitialZ,%1.3e,0,0,me,qe,1);' %xmom
     if Option=="ANonlin":
         print('setstartline("beam",nps,-3*radius,0 ,InitialZ,3*radius,0,InitialZ,0,0,0,me,qe,1);')
-
     print('map2D_E("wcs","z",0,"fieldmap.gdf","R","Z","Er","Ez",1) ;')
     print('Zcol=0;')
     print('copperscatter("wcs","z",0, "copper",0.01*nmac,2*nmac) ;')
@@ -459,18 +457,6 @@ def Plotter(Infile,FolderName,*args):
         Bvalue=fit[0][0]
         eB=np.sqrt(np.diag(fit[1])[0])
         return np.mean(initialT),Bvalue,eB
-        
-#        plt.figure(PlotterCounter)
-#        PlotterCounter+=1
-#        plt.plot(div0array,finxarray,'r.')
-#        plt.xlabel('initial divergence (rad)')
-#        plt.ylabel('final x (m) ')
-#         plt.plot(np.asarray(div0array),Bvalue*np.asarray(div0array))
-#        plotname="../../../../GPT_B/Archive/"+FolderName
-#        plt.savefig(plotname+ ".eps")
-#        plt.close()
-
-
     if 'A' in args:
         a0=([0.0, 0.0])
         fit = optimization.curve_fit(line, inxarray, finxarray)
@@ -479,20 +465,6 @@ def Plotter(Infile,FolderName,*args):
         eA=np.sqrt(np.diag(np.cov(inxarray,finxarray))[0])
         
         return np.mean(initialT),Avalue,eA
-
-#        plt.figure(PlotterCounter)
-#        PlotterCounter+=1
-#        
-#        plt.plot(inxarray,finxarray,'r.')
-#        plt.xlabel('initial x (m)')
-#        plt.ylabel('final x (m) ')
-#        
-##            print np.cov(inxarray,finxarray)
-#
-#        plt.plot(np.asarray(inxarray),Avalue*np.asarray(inxarray))
-#        plotname="../../../../GPT_A/Archive/"+FolderName
-#        plt.savefig(plotname+ ".eps")
-#        plt.close()
 
     if 'Tz' in args:
         plt.figure(TZfig)
@@ -566,7 +538,7 @@ def GPTrun(ParentFolder,Mode,Temp=10,N=2000,ScreenPos=50,InitialZ=0.025,BunchSiz
         
         sigmax=BunchSize
     
-    print N,Temp,ScreenPos,ParentFolder,InitialZ,sigmax
+    print 'Number=',N,'Tin=',Temp,'ScreenLoc=',ScreenPos,'ParentFolder=',ParentFolder,'Initial Z=', InitialZ,'BunchSize=',sigmax
     
     Ulist=[]
     if Mode=='T':
@@ -667,7 +639,7 @@ def TFit(Ulist,stdlist,estdlist,Temp,figureN=25):
     plt.plot(Ulist,PlotModel2(Ulist,Tfitted),label='T=(%2.1f $\pm$ %2.1f)K' %(Tfitted,eTfitted))
     return Tfitted,eTfitted
 
-def SingleGPTRun(ParentFolder,Voltage=-1000,Mode='TTraj',Temp=10,N=50,ScreenPos=50,InitialZ=0.025):
+def SingleGPTRun(ParentFolder,Voltage=-1000,Mode='TTraj',Temp=10,N=50,ScreenPos=50,InitialZ=0.025,BunchSize=0.002):
     
     FolderName='VBack=%d' %Voltage
     Path="../" +Pathname +"/"+ ParentFolder+"/"+FolderName
@@ -681,14 +653,14 @@ def SingleGPTRun(ParentFolder,Voltage=-1000,Mode='TTraj',Temp=10,N=50,ScreenPos=
     Fisher()
     if Mode=='TTraj':
         dynfile="beamdyn_Traj.in"
-        beam=BeamGenerator(N,Temp,sigmax,InitialZ)
+        beam=BeamGenerator(N,Temp,BunchSize,InitialZ)
         BeamDynWriter(dynfile,"beam","Snaps",beam)
         
         print "Running real bunch simulation in "+ FolderName
         #                DynamicFile,     GroupBy,    Outtxt
         GPTCall(dynfile,"time","std1.txt")
         
-        Plotter("std1.txt",FolderName,'xz','yz','Tz','show')
+        Plotter("std1.txt",FolderName,'xz','yz','show')
         os.remove(dynfile)
     if Mode=='E':
         dynfile="beamdyn_E.in"
@@ -776,10 +748,10 @@ def Saver(filename,*args):
     np.savetxt(file,zip(*S),fmt='%1.3e', delimiter='      ', newline='\n',)
     file.close()
 
-def Superfish2GPT(Array,Name,min=1,max=21):
+def Superfish2GPT(Array,Name,min=1,max=21,s=''):
     
     for Val in Array:
-        ParentFolder='%s=%1.2f' %(Name,Val)
+        ParentFolder='%s=%1.2f%s' %(Name,Val,s)
         for i in range(min,max):
 
             VBackPlate=0-250*i;
@@ -787,6 +759,10 @@ def Superfish2GPT(Array,Name,min=1,max=21):
             FolderName2='VBack=%d' %VBackPlate
             #Make and change to the corresponding directory
             infile=Pathname + "/"+ParentFolder+"/"+FolderName2+"/"+"OUTSF7.TXT" # Infile path
+
+            if not os.path.exists(infile):
+                print 'Infile does not exist, skipping entry'
+                continue
             outfile=Pathname + "/"+ParentFolder+"/"+FolderName2+"/"+"SHORTOUTSF7.TXT" # Outfile path
             numline=34 # skip the header
             print'Reading from', infile,' Processing for GPT input' #
@@ -799,4 +775,8 @@ def Superfish2GPT(Array,Name,min=1,max=21):
             np.savetxt(outfile, fin, fmt='%1.5e', delimiter='\t', header = '\tR\t\tZ\t\tEr\t\tEz\t\tabsE\t\tV', comments='')
             os.remove(infile)
 
+def Test(Array,Name,min=1,max=21,s=''):
+    for Val in Array:
+        ParentFolder='%s=%1.2f%s' %(Name,Val,s)
+        print ParentFolder
 

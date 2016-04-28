@@ -3,12 +3,17 @@ sys.path.append('../')
 import functions as fc
 import matplotlib.pyplot as plt
 import time
+import os
 
 Tlist=[10,30]
 fittedT=[]
 efittedT=[]
 Aperture=[]
 V=[]
+dir='Data_and_Plots/Aperture/'
+if not os.path.exists(dir):
+    os.mkdirs(dir)
+
 for ApertureSize in fc.ApertureRange:
     
     ParentFolderName='Aperture=%1.2f' %ApertureSize
@@ -32,7 +37,7 @@ for ApertureSize in fc.ApertureRange:
         efittedT.append(eTfit)
         Aperture.append(ApertureSize)
 
-fc.Saver('Data_and_Plots/Aperture/Data.txt',Aperture,fittedT,efittedT)
+fc.Saver(dir+'Data.txt',Aperture,fittedT,efittedT)
 
 plt.figure(1)
 plt.errorbar(Aperture,fittedT,efittedT,fmt='.')
@@ -40,11 +45,11 @@ plt.axis([1.5,5,0,40])
 for T in Tlist: plt.axhline(y=T)
 plt.xlabel('Aperture size (cm)')
 plt.ylabel('Fitted temperature (K)')
-plt.savefig('Data_and_Plots/Aperture/Tfits.eps')
+plt.savefig(dir+'Tfits.eps')
 
 plt.figure(25)
 plt.xlabel('Kinetic Energy after 7.5 cm of acceleration (keV)')
 plt.ylabel('Beam size (standard deviation) (m)')
 plt.legend()
-plt.savefig('Data_and_Plots/Aperture/Curves.eps')
+plt.savefig(dir+'Curves.eps')
 plt.show()

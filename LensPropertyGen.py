@@ -12,11 +12,11 @@ oldstdout = sys.stdout
 
 
 ####### TO VARY
-ApertureSize=2
+ApertureSize=4
 V2=5000;
 V1=0;
 LensZRange=fc.LensZRange
-PlateSept=1; # Z seperation between the ring
+PlateSept=0.3; # Z seperation between the ring
 FlightTubeLength= 50; # length of the Cavity (cm)
 
 GrandFolder=fc.GrandFolder
@@ -27,7 +27,6 @@ if not os.path.exists(Pathname):
 os.chdir(Pathname)
 
 LensZ=25
-ApertureSizeRange=[3.5,4]
 
 #fc.ApertureRange
 #
@@ -36,11 +35,11 @@ ApertureSizeRange=[3.5,4]
 #for k in range(0,1):
 #    ParentFolderName='Aperture=%1.2f' %ApertureSize
 #
-for PlateSept in fc.SeptRange:
-    ParentFolderName='Sept=%1.2f' %PlateSept
-#for ApertureSize in fc.ApertureRange:
-#    
-#    ParentFolderName='Aperture=%1.2f' %ApertureSize
+#for PlateSept in fc.TotSeptRange:
+#    ParentFolderName='Sept=%1.2f(r=4)' %PlateSept
+for ApertureSize in fc.ApertureRange:
+    
+    ParentFolderName='Aperture=%1.2f' %ApertureSize
 #    ParentFolderName='DCondition'
     ##################################### Consts
     GroundRingRad=0
@@ -187,7 +186,7 @@ sys.stdout=oldstdout
 os.system("open 'SFBatch - Shortcut.lnk'");
 str = raw_input("Press Enter to Continue once superfish has finished running  ");
 
-fc.Superfish2GPT(fc.PlateSept,'Sept')
+fc.Superfish2GPT(fc.ApertureRange,'Aperture')
 
 
 

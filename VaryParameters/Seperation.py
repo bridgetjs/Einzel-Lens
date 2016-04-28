@@ -10,7 +10,7 @@ efittedT=[]
 Sept=[]
 
 V=[]
-for PlateSept in fc.SeptRange:
+for PlateSept in fc.TotSeptRange:
     ParentFolderName='Sept=%1.2f' %PlateSept
 
 
@@ -32,7 +32,7 @@ for PlateSept in fc.SeptRange:
 fc.Saver('Data_and_Plots/Seperation/Data.txt',Sept,fittedT,efittedT)
 
 plt.figure(1)
-plt.errorbar(Aperture,fittedT,efittedT,fmt='.')
+plt.errorbar(Sept,fittedT,efittedT,fmt='.')
 plt.axis([1.5,5,0,40])
 for T in Tlist: plt.axhline(y=T)
 plt.xlabel('Aperture size (cm)')
