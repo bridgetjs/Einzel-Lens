@@ -5,7 +5,7 @@ import matplotlib.pyplot as plt
 import time
 import os
 
-Tlist=[10,20,30]
+Tlist=[10,10,10]
 fittedT=[]
 efittedT=[]
 Aperture=[]
@@ -18,14 +18,14 @@ for ApertureSize in fc.ApertureRange:
     
     ParentFolderName='Aperture=%1.2f' %ApertureSize
 
-    fc.GPTrun(ParentFolderName,'A',ScreenPos=50,InitialZ=0.025)
-    fc.GPTrun(ParentFolderName,'B',ScreenPos=50,InitialZ=0.025)
+    fc.GPTrun(ParentFolderName,'A',ScreenPos=50,InitialZ=0.05)
+    fc.GPTrun(ParentFolderName,'B',ScreenPos=50,InitialZ=0.05)
     AfileName='AVals/Adata(%s).txt' %ParentFolderName
     BfileName='BVals/Bdata(%s).txt' %ParentFolderName
 
     fc.ABSet(AfileName,BfileName)
     Afit,Bfit=fc.ABFIT()
-#    fc.ABCheck()
+    fc.ABCheck()
 
     for T in Tlist:
         Tfit,eTfit=fc.GPTrun(ParentFolderName,'T',Temp=T,N=2000,ScreenPos=50,InitialZ=0.025,BunchSize=2e-3)
@@ -41,11 +41,11 @@ plt.axis([1.5,5,0,40])
 for T in Tlist: plt.axhline(y=T)
 plt.xlabel('Aperture size (cm)')
 plt.ylabel('Fitted temperature (K)')
-plt.savefig(dir+'Tfits.eps')
+#plt.savefig(dir+'Tfits.eps')
 
 plt.figure(25)
 plt.xlabel('Kinetic Energy after 7.5 cm of acceleration (keV)')
 plt.ylabel('Beam size (standard deviation) (m)')
 plt.legend()
-plt.savefig(dir+'Curves.eps')
+#plt.savefig(dir+'Curves.eps')
 plt.show()

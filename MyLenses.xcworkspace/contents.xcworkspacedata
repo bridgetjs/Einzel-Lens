@@ -11,9 +11,6 @@
       location = "group:VaryParameters/Data_and_Plots">
    </FileRef>
    <FileRef
-      location = "group:VaryParameters/Evaluaters">
-   </FileRef>
-   <FileRef
       location = "group:VaryParameters/Setupmacro.py">
    </FileRef>
    <FileRef

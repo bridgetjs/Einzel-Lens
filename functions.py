@@ -30,13 +30,13 @@ LensZRange=[15,20,25,30,35,40]
 ScreenPosRange=[20,25,30,35,40,45,50]
 Z0=0.025
 
-ApertureRange=[2,2.5,3,3.5,4,4.5]
+ApertureRange=[2,2.5,3,3.5,4]
 #SeptRange=[0.5,0.75,1,1.25,1.5,1.75,2,2.25,2.5,2.75,3,3.25,3.5]
 SeptRange=[0.5,0.75,1,1.25,1.5,1.75,2]
 NewSeptRange=[0.3,0.4]
 TotSeptRange=sorted(SeptRange+NewSeptRange)
 VoltageRange=[3000,3500,4000,4500,5000]
-ThicknessRange=[]
+ThicknessRange=[0.05,0.1,0.15,0.2,0.3,0.4]
 
 
 def data(filename): #function to return the data belonging to an A or B file
@@ -561,7 +561,7 @@ def GPTrun(ParentFolder,Mode,Temp=10,N=2000,ScreenPos=50,InitialZ=0.025,BunchSiz
         if  os.path.exists(Path):
             os.chdir(Path);
         else:
-            print "Shit's fucked with ",Path
+            print "Error cannot find: ",Path
             sys.exit()
         
         Fisher()
@@ -596,7 +596,7 @@ def GPTrun(ParentFolder,Mode,Temp=10,N=2000,ScreenPos=50,InitialZ=0.025,BunchSiz
             A_list.append(A)
             eA_list.append(eA)
             Ulist.append(U_i)
-#            os.remove(dynfile)
+            os.remove(dynfile)
         if Mode=='B':
             print "Running B study in "+ FolderName
             dynfile="B_beamdyn.in"
@@ -607,7 +607,7 @@ def GPTrun(ParentFolder,Mode,Temp=10,N=2000,ScreenPos=50,InitialZ=0.025,BunchSiz
             B_list.append(B)
             eB_list.append(eB)
             Ulist.append(U_i)
-#            os.remove(dynfile)
+            os.remove(dynfile)
 
         os.chdir("../../../../VaryParameters")
             
@@ -648,7 +648,7 @@ def SingleGPTRun(ParentFolder,Voltage=-1000,Mode='TTraj',Temp=10,N=50,ScreenPos=
     if  os.path.exists(Path):
         os.chdir(Path);
     else:
-        print "Shit's fucked with ",Path
+        print "Error, cannot find",Path
         sys.exit()
         
     Fisher()
@@ -756,7 +756,6 @@ def Superfish2GPT(Array,Name,min=1,max=21,s=''):
         ParentFolder='%s=%1.2f%s' %(Name,Val,s)
         
         if Name=='Voltage': ParentFolder='Voltage=%d' %Val
-        print ParentFolder
         for i in range(min,max):
 
             VBackPlate=0-250*i;
@@ -784,4 +783,33 @@ def Test(Array,Name,min=1,max=21,s=''):
     for Val in Array:
         ParentFolder='%s=%1.2f%s' %(Name,Val,s)
         print ParentFolder
+
+def FullRun(Array,Name,Tlist,z=0.025,s=50):
+    fittedT=[]
+    efittedT=[]
+    Val_list=[]
+    dir='Data_and_Plots/%s/' %Name
+    if not os.path.exists(dir):
+        os.makedirs(dir)
+    
+    for Val in Array:
+        
+        ParentFolder='%s=%1.2f' %(Name,Val)
+        GPTrun(ParentFolder,'A',ScreenPos=s,InitialZ=z)
+        GPTrun(ParentFolder,'B',ScreenPos=s,InitialZ=z)
+        AfileName='AVals/Adata(%s).txt' %ParentFolder
+        BfileName='BVals/Bdata(%s).txt' %ParentFolder
+        ABSet(AfileName,BfileName)
+        Afit,Bfit=ABFIT()
+
+        for T in Tlist:
+            Tfit,eTfit=GPTrun(ParentFolder,'T',Temp=T,N=2000,ScreenPos=s,InitialZ=z,BunchSize=2e-3)
+            fittedT.append(Tfit)
+            efittedT.append(eTfit)
+            Val_list.append(Val)
+
+    Saver(dir+'Data.txt',Val_list,fittedT,efittedT)
+
+
+
 

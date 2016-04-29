@@ -15,7 +15,7 @@ def data4(filename): #function to return the data file
     file.close() #close file
     x=data[:,0]; y=data[:,1]; z=data[:,2];   #read data assuming data is in the exepcted format
     return x,y,z
-dir='Data_and_Plots/Seperation/'
+dir='Data_and_Plots/Sept/'
 Arangelist=[]
 Brangelist=[]
 RatioList=[]
@@ -25,7 +25,7 @@ DiffList=[]
 
 TempRange=[10,30]
 
-S,T,eT=np.loadtxt('Data_and_Plots/Seperation/Data.txt',unpack=True)
+S,T,eT=np.loadtxt('Data_and_Plots/Sept/Data.txt',unpack=True)
 
 plt.figure(1)
 plt.errorbar(S,T,eT,fmt='.')
@@ -33,7 +33,7 @@ for Temp in TempRange: plt.axhline(y=Temp)
 plt.axis([0, 2, 0, 40])
 plt.xlabel('Plate Separation,s, (cm)')
 plt.ylabel('Temperature (K)')
-
+plt.savefig(dir+'fits.eps')
 for PlateSept in fc.TotSeptRange:
     ParentFolderName='Sept=%1.2f' %PlateSept
     
