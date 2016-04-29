@@ -36,6 +36,7 @@ SeptRange=[0.5,0.75,1,1.25,1.5,1.75,2]
 NewSeptRange=[0.3,0.4]
 TotSeptRange=sorted(SeptRange+NewSeptRange)
 VoltageRange=[3000,3500,4000,4500,5000]
+ThicknessRange=[]
 
 
 def data(filename): #function to return the data belonging to an A or B file
@@ -469,8 +470,8 @@ def Plotter(Infile,FolderName,*args):
     if 'Tz' in args:
         plt.figure(TZfig)
         plt.plot()
-        plt.xlabel('z (m)')
-        plt.ylabel('Kinetic Energy (keV)')
+        plt.xlabel('z (m)',fontsize=16)
+        plt.ylabel('Kinetic Energy (keV)',fontsize=16)
 
     if 'RealBunch' in args:
         return finxarray,np.mean(initialT);
@@ -751,7 +752,11 @@ def Saver(filename,*args):
 def Superfish2GPT(Array,Name,min=1,max=21,s=''):
     
     for Val in Array:
+        
         ParentFolder='%s=%1.2f%s' %(Name,Val,s)
+        
+        if Name=='Voltage': ParentFolder='Voltage=%d' %Val
+        print ParentFolder
         for i in range(min,max):
 
             VBackPlate=0-250*i;

@@ -12,10 +12,10 @@ oldstdout = sys.stdout
 
 
 ####### TO VARY
-ApertureSize=4
+ApertureSize=2
 V2=5000;
 V1=0;
-LensZRange=fc.LensZRange
+LensZ=25
 PlateSept=0.3; # Z seperation between the ring
 FlightTubeLength= 50; # length of the Cavity (cm)
 
@@ -26,21 +26,24 @@ if not os.path.exists(Pathname):
     os.makedirs(Pathname)
 os.chdir(Pathname)
 
-LensZ=25
+
 
 #fc.ApertureRange
 #
 #for LensZ in fc.LensZRange:
 #    ParentFolderName='Pos=%d' %LensZ
-#for k in range(0,1):
-#    ParentFolderName='Aperture=%1.2f' %ApertureSize
-#
+for k in range(0,1):
+    ParentFolderName='Opt'
+    
 #for PlateSept in fc.TotSeptRange:
 #    ParentFolderName='Sept=%1.2f(r=4)' %PlateSept
-for ApertureSize in fc.ApertureRange:
-    
-    ParentFolderName='Aperture=%1.2f' %ApertureSize
+#for ApertureSize in fc.ApertureRange:
+#    
+#    ParentFolderName='Aperture=%1.2f' %ApertureSize
 #    ParentFolderName='DCondition'
+#for V2 in fc.VoltageRange:
+#    ParentFolderName='Voltage=%d' %V2
+
     ##################################### Consts
     GroundRingRad=0
     CavityRadius= 10.5; # Radius of Cavity (cm)
@@ -186,7 +189,7 @@ sys.stdout=oldstdout
 os.system("open 'SFBatch - Shortcut.lnk'");
 str = raw_input("Press Enter to Continue once superfish has finished running  ");
 
-fc.Superfish2GPT(fc.ApertureRange,'Aperture')
+#fc.Superfish2GPT(fc.VoltageRange,'Voltage')
 
 
 
@@ -200,32 +203,32 @@ fc.Superfish2GPT(fc.ApertureRange,'Aperture')
 ##for PlateSept in [1]:
 ##    ParentFolderName='Sept=%1.2f' %PlateSept
 #
-##for k in range(0,1):
-##    ParentFolderName='DCondition'
+for k in range(0,1):
+    ParentFolderName='Opt'
 #
 ##for LensZ in fc.LensZRange:
 ##    ParentFolderName='Pos=%d' %LensZ
 #
-#    for i in range(loopmin,loopmax):
-#        
-#        VBackPlate=0-250*i;
-#        
-#        
-#        #Print a string with the Voltages of the Plates
-#        FolderName2='VBack=%d' %VBackPlate
-#        
-#        #Make and change to the corresponding directory
-#        infile=Pathname + "/"+ParentFolderName+"/"+FolderName2+"/"+"OUTSF7.TXT" # Infile path
-#        outfile=Pathname + "/"+ParentFolderName+"/"+FolderName2+"/"+"SHORTOUTSF7.TXT" # Outfile path
-#        numline=34 # skip the header
-#        print('Reading from', infile,' Processing for GPT input') #
-#        #Header line
-#        p="         R             Z                Er         Ez             absE             V\n"
-#
-#        headerfinish=False
-#
-#        fin=np.loadtxt(infile,skiprows=numline)
-#        np.savetxt(outfile, fin, fmt='%1.5e', delimiter='\t', header = '\tR\t\tZ\t\tEr\t\tEz\t\tabsE\t\tV', comments='')
-#        os.remove(infile)
+    for i in range(loopmin,loopmax):
+        
+        VBackPlate=0-250*i;
+        
+        
+        #Print a string with the Voltages of the Plates
+        FolderName2='VBack=%d' %VBackPlate
+        
+        #Make and change to the corresponding directory
+        infile=Pathname + "/"+ParentFolderName+"/"+FolderName2+"/"+"OUTSF7.TXT" # Infile path
+        outfile=Pathname + "/"+ParentFolderName+"/"+FolderName2+"/"+"SHORTOUTSF7.TXT" # Outfile path
+        numline=34 # skip the header
+        print('Reading from', infile,' Processing for GPT input') #
+        #Header line
+        p="         R             Z                Er         Ez             absE             V\n"
+
+        headerfinish=False
+
+        fin=np.loadtxt(infile,skiprows=numline)
+        np.savetxt(outfile, fin, fmt='%1.5e', delimiter='\t', header = '\tR\t\tZ\t\tEr\t\tEz\t\tabsE\t\tV', comments='')
+        os.remove(infile)
 
 sys.stdout=oldstdout

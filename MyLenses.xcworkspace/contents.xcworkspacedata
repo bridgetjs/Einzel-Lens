@@ -2,10 +2,16 @@
 <Workspace
    version = "1.0">
    <FileRef
+      location = "group:VaryParameters/Tuning">
+   </FileRef>
+   <FileRef
       location = "group:VaryParameters/OldCodes">
    </FileRef>
    <FileRef
       location = "group:VaryParameters/Data_and_Plots">
+   </FileRef>
+   <FileRef
+      location = "group:VaryParameters/Evaluaters">
    </FileRef>
    <FileRef
       location = "group:VaryParameters/Setupmacro.py">
@@ -14,13 +20,13 @@
       location = "group:VaryParameters/Seperation.py">
    </FileRef>
    <FileRef
-      location = "group:VaryParameters/macro.py">
+      location = "group:/Users/Bridget/Documents/MPhys Project/Einzel Lens/VaryParameters/Aperturemacro.py">
+   </FileRef>
+   <FileRef
+      location = "group:VaryParameters/Voltagemacro.py">
    </FileRef>
    <FileRef
       location = "group:LensPropertyGen.py">
-   </FileRef>
-   <FileRef
-      location = "group:VaryParameters/Evaluaters">
    </FileRef>
    <FileRef
       location = "group:TSim/maxtest.py">

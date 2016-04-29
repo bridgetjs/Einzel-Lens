@@ -4,24 +4,19 @@ import functions as fc
 import matplotlib.pyplot as plt
 import time
 import os
-
-Tlist=[10,30]
+import numpy as np
+Tlist=[10,10,10]
 fittedT=[]
 efittedT=[]
 Aperture=[]
 V=[]
-dir='Data_and_Plots/Aperture/'
+dir='Data_and_Plots/Voltage/'
 if not os.path.exists(dir):
-    os.mkdirs(dir)
+    os.makedirs(dir)
 
-for ApertureSize in fc.ApertureRange:
+for V2 in fc.VoltageRange:
     
-    ParentFolderName='Aperture=%1.2f' %ApertureSize
-#
-#for V2 in fc.VoltageRange:
-#    ParentFolderName='Pos=%d' %LensZ
-#    ParentFolderName='V=%d' V2
-
+    ParentFolderName='Voltage=%d' %V2
     fc.GPTrun(ParentFolderName,'A',ScreenPos=50,InitialZ=0.025)
     fc.GPTrun(ParentFolderName,'B',ScreenPos=50,InitialZ=0.025)
     AfileName='AVals/Adata(%s).txt' %ParentFolderName
@@ -35,17 +30,17 @@ for ApertureSize in fc.ApertureRange:
         Tfit,eTfit=fc.GPTrun(ParentFolderName,'T',Temp=T,N=2000,ScreenPos=50,InitialZ=0.025,BunchSize=2e-3)
         fittedT.append(Tfit)
         efittedT.append(eTfit)
-        Aperture.append(ApertureSize)
+        V.append(V2)
 
-fc.Saver(dir+'Data.txt',Aperture,fittedT,efittedT)
+fc.Saver(dir+'Data(3x10).txt',V,fittedT,efittedT)
 
-plt.figure(1)
-plt.errorbar(Aperture,fittedT,efittedT,fmt='.')
-plt.axis([1.5,5,0,40])
+plt.figure(2)
+plt.errorbar(np.asarray(V)*1e-3,fittedT,efittedT,fmt='.')
+plt.axis([2.5,5.5,0,40])
 for T in Tlist: plt.axhline(y=T)
-plt.xlabel('Aperture size (cm)')
+plt.xlabel('Central Plate Voltage (kV) ')
 plt.ylabel('Fitted temperature (K)')
-plt.savefig(dir+'Tfits.eps')
+plt.savefig(dir+'Tfit(3x10).eps')
 
 plt.figure(25)
 plt.xlabel('Kinetic Energy after 7.5 cm of acceleration (keV)')
